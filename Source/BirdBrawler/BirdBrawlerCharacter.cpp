@@ -53,6 +53,7 @@ void ABirdBrawlerCharacter::BeginPlay()
 
 	verify(Fsm);
 	Fsm->Start();
+	Fsm->PushState("Idle");
 }
 
 void ABirdBrawlerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -72,6 +73,6 @@ void ABirdBrawlerCharacter::MoveHorizontal(float Value)
 
 void ABirdBrawlerCharacter::GoToFsmState(const FName StateName)
 {
-	Fsm->PopAllStatesExcept("First");
+	Fsm->PopActiveState();
 	Fsm->PushState(StateName);
 }
