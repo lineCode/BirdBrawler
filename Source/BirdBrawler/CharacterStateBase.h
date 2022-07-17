@@ -12,6 +12,13 @@ enum EInputBufferedOutcome
 	NotBuffered
 };
 
+UENUM(BlueprintType)
+enum EAirborneState
+{
+	Airborne,
+	Grounded
+};
+
 UCLASS()
 class BIRDBRAWLER_API UCharacterStateBase : public UStateBase
 {
@@ -19,6 +26,9 @@ class BIRDBRAWLER_API UCharacterStateBase : public UStateBase
 
 public:
 	UCharacterStateBase() = default;
+
+	UFUNCTION(BlueprintNativeEvent, Category="State", DisplayName="On Input Buffered")
+	void OnInputBuffered(FName Entry);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -37,7 +47,16 @@ protected:
 	void MoveCharacterHorizontal(const float Value);
 
 	UFUNCTION(BlueprintCallable)
-	void GoToState(const FName StateName);
+	TArray<FString> GetBufferedInputs() const;
+
+	UFUNCTION(BlueprintCallable)
+	void UseBufferedInput(const FString& Input);
+
+	UFUNCTION(BlueprintCallable)
+	bool IsAirborne() const;
+
+	UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Branches"))
+	bool CheckAirborneState(TEnumAsByte<EAirborneState>& Branches);
 
 	virtual void Init_Implementation() override;
 };

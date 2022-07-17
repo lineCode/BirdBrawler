@@ -64,15 +64,39 @@ void ABirdBrawlerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void ABirdBrawlerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	Airborne = GetCharacterMovement()->IsFalling();
 }
 
 void ABirdBrawlerCharacter::MoveHorizontal(float Value)
 {
-	AddMovementInput(FVector(0.f, -1.f, 0.f), Value);
+	MovementDirection = Value;
+
+	AddMovementInput(FVector(0.f, -1.f, 0.f), MovementDirection);
 }
 
 void ABirdBrawlerCharacter::GoToFsmState(const FName StateName)
 {
 	Fsm->PopActiveState();
 	Fsm->PushState(StateName);
+}
+
+float ABirdBrawlerCharacter::GetMovementDirection() const
+{
+	return MovementDirection;
+}
+
+void ABirdBrawlerCharacter::SetMovementDirection(float Direction)
+{
+	MovementDirection = Direction;
+}
+
+bool ABirdBrawlerCharacter::IsAirborne() const
+{
+	return Airborne;
+}
+
+float ABirdBrawlerCharacter::GetInputMovement() const
+{
+	return GetMovesBufferComponent()->InputMovement;
 }

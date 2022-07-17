@@ -24,9 +24,15 @@ class ABirdBrawlerCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UMovesBufferComponent* MovesBufferComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UNavMovementComponent* NavMovementComponent;
+
 protected:
 	UPROPERTY(EditAnywhere, Category="FSM")
 	UFSM* Fsm;
+
+	float MovementDirection{1.f};
+	bool Airborne{false};
 
 public:
 	ABirdBrawlerCharacter();
@@ -39,6 +45,18 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void GoToFsmState(const FName StateName);
+
+	UFUNCTION(BlueprintCallable)
+	float GetMovementDirection() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetMovementDirection(float Direction);
+
+	UFUNCTION(BlueprintCallable)
+	bool IsAirborne() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetInputMovement() const;
 
 	FORCEINLINE UMovesBufferComponent* GetMovesBufferComponent() const { return MovesBufferComponent; }
 	FORCEINLINE UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }

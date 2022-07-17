@@ -11,9 +11,8 @@ namespace
 	const FString EntryStartJump{"StartJump"};
 	const FString EntryStopJump{"StopJump"};
 	const FString EntryStartMoveRight{"StartMoveRight"};
-	const FString EntryStopMoveRight{"StopMoveRight"};
 	const FString EntryStartMoveLeft{"StartMoveLeft"};
-	const FString EntryStopMoveLeft{"StopMoveLeft"};
+	const FString EntryStopMove{"StopMove"};
 }
 
 UMovesBufferComponent::UMovesBufferComponent()
@@ -39,6 +38,20 @@ bool UMovesBufferComponent::IsInputBuffered(const FString& Input, bool ConsumeEn
 	return false;
 }
 
+TArray<FString> UMovesBufferComponent::GetBufferedInputs() const
+{
+	TArray<FString> BufferedInputs;
+	for (auto& Input : Buffer)
+	{
+		if (Input.Name != NoInput && !Input.Used)
+		{
+			BufferedInputs.Emplace(Input.Name);
+		}
+	}
+
+	return BufferedInputs;
+}
+
 void UMovesBufferComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -54,6 +67,8 @@ void UMovesBufferComponent::BeginPlay()
 	                                       &UMovesBufferComponent::OnStartMoveLeft);
 	GetOwner()->InputComponent->BindAction("MoveLeft", IE_Released, this,
 	                                       &UMovesBufferComponent::OnStopMoveLeft);
+
+	GetOwner()->InputComponent->BindAxis("MoveHorizontal", this, &UMovesBufferComponent::OnMoveHorizontal);
 
 	ClearBuffer();
 }
@@ -71,6 +86,19 @@ void UMovesBufferComponent::AddMoveToBuffer(const FString& MoveName)
 	BufferChanged = true;
 }
 
+bool UMovesBufferComponent::BufferContainsConsumableInput(const FString& Input) const
+{
+	for (const auto& CurrentInput : Buffer)
+	{
+		if (CurrentInput.Name == Input && !CurrentInput.Used)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void UMovesBufferComponent::ClearBuffer()
 {
 	Buffer.clear();
@@ -78,6 +106,11 @@ void UMovesBufferComponent::ClearBuffer()
 	{
 		Buffer.emplace_back(FInputBufferEntry{NoInput, false});
 	}
+}
+
+void UMovesBufferComponent::OnMoveHorizontal(float Value)
+{
+	InputMovement = Value;
 }
 
 // TODO: these are all the same, make it generic maybe?
@@ -98,7 +131,7 @@ void UMovesBufferComponent::OnStartMoveRight()
 
 void UMovesBufferComponent::OnStopMoveRight()
 {
-	AddMoveToBuffer(EntryStopMoveRight);
+	AddMoveToBuffer(EntryStopMove);
 }
 
 void UMovesBufferComponent::OnStartMoveLeft()
@@ -108,7 +141,7 @@ void UMovesBufferComponent::OnStartMoveLeft()
 
 void UMovesBufferComponent::OnStopMoveLeft()
 {
-	AddMoveToBuffer(EntryStopMoveLeft);
+	AddMoveToBuffer(EntryStopMove);
 }
 
 void UMovesBufferComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -139,4 +172,17 @@ void UMovesBufferComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	}
 
 	BufferChanged = false;
+}
+
+void UMovesBufferComponent::UseBufferedInput(const FString& Input)
+{
+	verify(BufferContainsConsumableInput(Input));
+
+	for (auto& CurrentInput : Buffer)
+	{
+		if (CurrentInput.Name == Input)
+		{
+			CurrentInput.Used = true;
+		}
+	}
 }

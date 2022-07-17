@@ -25,7 +25,13 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
+	void UseBufferedInput(const FString& Input);
+
 	bool IsInputBuffered(const FString& Input, bool ConsumeEntry = true);
+
+	TArray<FString> GetBufferedInputs() const;
+
+	float InputMovement{0.f};
 
 protected:
 	std::deque<FInputBufferEntry> Buffer;
@@ -36,8 +42,11 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	void AddMoveToBuffer(const FString& MoveName);
+	bool BufferContainsConsumableInput(const FString& Input) const;
 
 	void ClearBuffer();
+
+	void OnMoveHorizontal(float Value);
 
 	void OnStartJump();
 	void OnStopJump();
