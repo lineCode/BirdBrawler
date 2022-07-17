@@ -88,7 +88,7 @@ float ABirdBrawlerCharacter::GetMovementDirection() const
 
 void ABirdBrawlerCharacter::SetMovementDirection(float Direction)
 {
-	MovementDirection = Direction;
+	MovementDirection = Direction > 0.f ? 1.f : (Direction < 0.f ? -1.f : 0.f);
 }
 
 bool ABirdBrawlerCharacter::IsAirborne() const
