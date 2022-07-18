@@ -19,6 +19,13 @@ enum EAirborneState
 	Grounded
 };
 
+UENUM(BlueprintType)
+enum EMovementState
+{
+	Moving,
+	NotMoving
+};
+
 UCLASS()
 class BIRDBRAWLER_API UCharacterStateBase : public UStateBase
 {
@@ -57,6 +64,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Branches"))
 	bool CheckAirborneState(TEnumAsByte<EAirborneState>& Branches);
+
+	UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Branches"))
+	bool CheckMovementState(TEnumAsByte<EMovementState>& Branches);
 
 	virtual void Init_Implementation() override;
 };

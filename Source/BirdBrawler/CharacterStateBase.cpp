@@ -52,6 +52,12 @@ bool UCharacterStateBase::CheckAirborneState(TEnumAsByte<EAirborneState>& Branch
 	return Character->IsAirborne();
 }
 
+bool UCharacterStateBase::CheckMovementState(TEnumAsByte<EMovementState>& Branches)
+{
+	Branches = Character->GetMovementDirection() != 0.f ? Moving : NotMoving;
+	return Character->GetMovementDirection() != 0.f;
+}
+
 void UCharacterStateBase::Init_Implementation()
 {
 	Super::Init_Implementation();
