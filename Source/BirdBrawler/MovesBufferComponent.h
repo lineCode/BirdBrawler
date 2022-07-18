@@ -33,6 +33,9 @@ public:
 
 	float InputMovement{0.f};
 
+	bool MovingRight{false};
+	bool MovingLeft{false};
+
 protected:
 	std::deque<FInputBufferEntry> Buffer;
 	float ElapsedFrameTime = 0.f;
@@ -47,11 +50,13 @@ protected:
 	void ClearBuffer();
 
 	void OnMoveHorizontal(float Value);
-
+	
 	void OnStartJump();
 	void OnStopJump();
 	void OnStartMoveRight();
 	void OnStopMoveRight();
 	void OnStartMoveLeft();
 	void OnStopMoveLeft();
+
+	void UpdateMovement() const;
 };

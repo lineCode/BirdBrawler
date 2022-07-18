@@ -6,6 +6,7 @@ namespace
 {
 	constexpr auto BufferSizeFrames{6};
 	constexpr auto BufferFrameLength{.032f};
+
 	const FString NoInput{""};
 
 	const FString EntryStartJump{"StartJump"};
@@ -68,7 +69,7 @@ void UMovesBufferComponent::BeginPlay()
 	GetOwner()->InputComponent->BindAction("MoveLeft", IE_Released, this,
 	                                       &UMovesBufferComponent::OnStopMoveLeft);
 
-	GetOwner()->InputComponent->BindAxis("MoveHorizontal", this, &UMovesBufferComponent::OnMoveHorizontal);
+	//GetOwner()->InputComponent->BindAxis("MoveHorizontal", this, &UMovesBufferComponent::OnMoveHorizontal);
 
 	ClearBuffer();
 }
@@ -127,21 +128,51 @@ void UMovesBufferComponent::OnStopJump()
 void UMovesBufferComponent::OnStartMoveRight()
 {
 	AddMoveToBuffer(EntryStartMoveRight);
+
+	MovingRight = true;
 }
 
 void UMovesBufferComponent::OnStopMoveRight()
 {
 	AddMoveToBuffer(EntryStopMove);
+
+	MovingRight = false;
 }
 
 void UMovesBufferComponent::OnStartMoveLeft()
 {
 	AddMoveToBuffer(EntryStartMoveLeft);
+
+	MovingLeft = true;
 }
 
 void UMovesBufferComponent::OnStopMoveLeft()
 {
 	AddMoveToBuffer(EntryStopMove);
+
+	MovingLeft = false;
+}
+
+void UMovesBufferComponent::UpdateMovement() const
+{
+	if (auto* Character = Cast<ABirdBrawlerCharacter>(GetOwner()))
+	{
+		if ((MovingRight && MovingLeft) || (!MovingRight && !MovingLeft))
+		{
+			Character->SetMovementDirection(0.f);
+		}
+		else
+		{
+			if (MovingRight)
+			{
+				Character->SetMovementDirection(1.f);
+			}
+			else if (MovingLeft)
+			{
+				Character->SetMovementDirection(-1.f);
+			}
+		}
+	}
 }
 
 void UMovesBufferComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -172,6 +203,8 @@ void UMovesBufferComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	}
 
 	BufferChanged = false;
+
+	UpdateMovement();
 }
 
 void UMovesBufferComponent::UseBufferedInput(const FString& Input)

@@ -1,10 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "BirdBrawlerCharacter.h"
+
+#include "Debug.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/InputComponent.h"
-#include "InputBuffer.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -66,6 +66,8 @@ void ABirdBrawlerCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	Airborne = GetCharacterMovement()->IsFalling();
+
+	Debug::ScreenLog(10, FString::Printf(TEXT("Movement direction: %f"), MovementDirection));
 }
 
 void ABirdBrawlerCharacter::MoveHorizontal(float Value)
@@ -88,12 +90,22 @@ float ABirdBrawlerCharacter::GetMovementDirection() const
 
 void ABirdBrawlerCharacter::SetMovementDirection(float Direction)
 {
-	MovementDirection = Direction > 0.f ? 1.f : (Direction < 0.f ? -1.f : 0.f);
+	MovementDirection = Direction;
+}
+
+float ABirdBrawlerCharacter::GetMovementRotationYaw() const
+{
+	return MovementDirection > 0.f ? -90.f : 90.f;
 }
 
 bool ABirdBrawlerCharacter::IsAirborne() const
 {
 	return Airborne;
+}
+
+bool ABirdBrawlerCharacter::IsMovementRequested() const
+{
+	return MovementDirection != 0.f;
 }
 
 float ABirdBrawlerCharacter::GetInputMovement() const

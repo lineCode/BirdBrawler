@@ -53,7 +53,13 @@ public:
 	void SetMovementDirection(float Direction);
 
 	UFUNCTION(BlueprintCallable)
+	float GetMovementRotationYaw() const;
+
+	UFUNCTION(BlueprintCallable)
 	bool IsAirborne() const;
+
+	UFUNCTION(BlueprintCallable)
+	bool IsMovementRequested() const;
 
 	UFUNCTION(BlueprintCallable)
 	float GetInputMovement() const;
