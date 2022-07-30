@@ -14,6 +14,7 @@ namespace
 	const FString EntryStartMoveRight{"StartMoveRight"};
 	const FString EntryStartMoveLeft{"StartMoveLeft"};
 	const FString EntryStopMove{"StopMove"};
+	const FString EntryAttack{"Attack"};
 }
 
 UMovesBufferComponent::UMovesBufferComponent()
@@ -69,7 +70,7 @@ void UMovesBufferComponent::BeginPlay()
 	GetOwner()->InputComponent->BindAction("MoveLeft", IE_Released, this,
 	                                       &UMovesBufferComponent::OnStopMoveLeft);
 
-	//GetOwner()->InputComponent->BindAxis("MoveHorizontal", this, &UMovesBufferComponent::OnMoveHorizontal);
+	GetOwner()->InputComponent->BindAction("Attack", IE_Pressed, this, &UMovesBufferComponent::OnAttack);
 
 	ClearBuffer();
 }
@@ -151,6 +152,11 @@ void UMovesBufferComponent::OnStopMoveLeft()
 	AddMoveToBuffer(EntryStopMove);
 
 	MovingLeft = false;
+}
+
+void UMovesBufferComponent::OnAttack()
+{
+	AddMoveToBuffer(EntryAttack);
 }
 
 void UMovesBufferComponent::UpdateMovement() const

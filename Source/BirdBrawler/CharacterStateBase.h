@@ -37,7 +37,12 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category="State", DisplayName="On Input Buffered")
 	void OnInputBuffered(FName Entry);
 
+	UFUNCTION(BlueprintNativeEvent, Category="State", DisplayName="On Move Ended")
+	void OnCharacterMoveEnded(FName MoveName);
+
 protected:
+	FDelegateHandle MoveEndedHandle;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ABirdBrawlerCharacter* Character{nullptr};
 
@@ -68,5 +73,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Branches"))
 	bool CheckMovementState(TEnumAsByte<EMovementState>& Branches);
 
+	UFUNCTION(BlueprintCallable)
+	void GoToFsmState(FName StateName) const;
+
+	void InvokeCharacterMoveEndedEvent(FName MoveName);
+
 	virtual void Init_Implementation() override;
+	virtual void Enter_Implementation() override;
+	virtual void Exit_Implementation() override;
 };

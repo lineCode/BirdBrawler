@@ -10,6 +10,8 @@
 
 class UInputBuffer;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FMoveEnded, FName);
+
 UCLASS(config=Game)
 class ABirdBrawlerCharacter : public ACharacter
 {
@@ -27,12 +29,16 @@ class ABirdBrawlerCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UNavMovementComponent* NavMovementComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UMovesEffectorComponent* MovesEffectorComponent;
+
 protected:
 	UPROPERTY(EditAnywhere, Category="FSM")
 	UFSM* Fsm;
 
-	float MovementDirection{1.f};
+	float MovementDirection{0.f};
 	bool Airborne{false};
+	FName CurrentMove{""};
 
 public:
 	ABirdBrawlerCharacter();
@@ -59,12 +65,24 @@ public:
 	bool IsAirborne() const;
 
 	UFUNCTION(BlueprintCallable)
+	FName GetCurrentMove() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentMove(FName MoveName);
+
+	UFUNCTION(BlueprintCallable)
 	bool IsMovementRequested() const;
 
 	UFUNCTION(BlueprintCallable)
 	float GetInputMovement() const;
 
+	UFUNCTION(BlueprintCallable)
+	void InvokeMoveEndedDelegate(FName MoveName) const;
+
+	FMoveEnded MoveEndedDelegate;
+
 	FORCEINLINE UMovesBufferComponent* GetMovesBufferComponent() const { return MovesBufferComponent; }
+	FORCEINLINE UMovesEffectorComponent* GetMovesEffectorComponent() const { return MovesEffectorComponent; }
 	FORCEINLINE UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 };

@@ -3,6 +3,7 @@
 #include "BirdBrawlerCharacter.h"
 
 #include "Debug.h"
+#include "MovesEffectorComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -45,6 +46,7 @@ ABirdBrawlerCharacter::ABirdBrawlerCharacter()
 	Fsm = CreateDefaultSubobject<UFSM>(TEXT("ActionsFSM"));
 
 	MovesBufferComponent = CreateDefaultSubobject<UMovesBufferComponent>(TEXT("MovesBuffer"));
+	MovesEffectorComponent = CreateDefaultSubobject<UMovesEffectorComponent>(TEXT("MovesEffector"));
 }
 
 void ABirdBrawlerCharacter::BeginPlay()
@@ -103,6 +105,16 @@ bool ABirdBrawlerCharacter::IsAirborne() const
 	return Airborne;
 }
 
+FName ABirdBrawlerCharacter::GetCurrentMove() const
+{
+	return CurrentMove;
+}
+
+void ABirdBrawlerCharacter::SetCurrentMove(FName MoveName)
+{
+	CurrentMove = MoveName;
+}
+
 bool ABirdBrawlerCharacter::IsMovementRequested() const
 {
 	return MovementDirection != 0.f;
@@ -111,4 +123,9 @@ bool ABirdBrawlerCharacter::IsMovementRequested() const
 float ABirdBrawlerCharacter::GetInputMovement() const
 {
 	return GetMovesBufferComponent()->InputMovement;
+}
+
+void ABirdBrawlerCharacter::InvokeMoveEndedDelegate(FName MoveName) const
+{
+	MoveEndedDelegate.Broadcast(MoveName);
 }

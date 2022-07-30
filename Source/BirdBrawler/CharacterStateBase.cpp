@@ -58,13 +58,41 @@ bool UCharacterStateBase::CheckMovementState(TEnumAsByte<EMovementState>& Branch
 	return Character->GetMovementDirection() != 0.f;
 }
 
+void UCharacterStateBase::GoToFsmState(FName StateName) const
+{
+	Character->GoToFsmState(StateName);
+}
+
+void UCharacterStateBase::InvokeCharacterMoveEndedEvent(FName MoveName)
+{
+	OnCharacterMoveEnded(MoveName);
+}
+
+void UCharacterStateBase::OnCharacterMoveEnded_Implementation(FName MoveName)
+{
+}
+
 void UCharacterStateBase::Init_Implementation()
 {
-	Super::Init_Implementation();
-
 	Character = Cast<ABirdBrawlerCharacter>(ActorOwner);
 	verify(Character);
 
 	SkeletalMesh = Character->FindComponentByClass<USkeletalMeshComponent>();
 	verify(SkeletalMesh);
+
+	Super::Init_Implementation();
+}
+
+void UCharacterStateBase::Enter_Implementation()
+{
+	MoveEndedHandle = Character->MoveEndedDelegate.
+	                             AddUObject(this, &UCharacterStateBase::InvokeCharacterMoveEndedEvent);
+	Super::Enter_Implementation();
+}
+
+void UCharacterStateBase::Exit_Implementation()
+{
+	Character->MoveEndedDelegate.Remove(MoveEndedHandle);
+
+	Super::Exit_Implementation();
 }

@@ -11,5 +11,5 @@ class BIRDBRAWLER_API UMoveDataAsset : public UDataAsset
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UAnimationAsset* AnimationAsset{nullptr};
+	FString MoveId;
 };

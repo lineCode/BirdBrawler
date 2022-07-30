@@ -57,6 +57,7 @@ protected:
 	void OnStopMoveRight();
 	void OnStartMoveLeft();
 	void OnStopMoveLeft();
+	void OnAttack();
 
 	void UpdateMovement() const;
 };
