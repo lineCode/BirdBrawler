@@ -5,7 +5,7 @@
 namespace
 {
 	constexpr auto BufferSizeFrames{6};
-	constexpr auto BufferFrameLength{.032f};
+	constexpr auto BufferFrameLength{.32f};
 
 	const FString NoInput{""};
 

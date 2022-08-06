@@ -1,9 +1,8 @@
 #include "CharacterStateBase.h"
 
-namespace
-{
-	static const FName FirstState{"First"};
-}
+#include <string>
+
+#include "Debug.h"
 
 void UCharacterStateBase::OnInputBuffered_Implementation(FName Entry)
 {
@@ -65,7 +64,14 @@ void UCharacterStateBase::GoToFsmState(FName StateName) const
 
 void UCharacterStateBase::InvokeCharacterMoveEndedEvent(FName MoveName)
 {
-	OnCharacterMoveEnded(MoveName);
+	// TODO: ugly af
+	if (FSMOwner->IsStateActive(Name))
+	{
+		const std::string MoveNameStr = TCHAR_TO_UTF8(*(MoveName.ToString()));
+
+		Debug::ScreenLog(FString::Printf(TEXT("Move Ended: %hs"), MoveNameStr.c_str()));
+		OnCharacterMoveEnded(MoveName);
+	}
 }
 
 void UCharacterStateBase::OnCharacterMoveEnded_Implementation(FName MoveName)
@@ -80,19 +86,19 @@ void UCharacterStateBase::Init_Implementation()
 	SkeletalMesh = Character->FindComponentByClass<USkeletalMeshComponent>();
 	verify(SkeletalMesh);
 
+	// TODO: this should be in Enter_Implementation, fix it
+	MoveEndedHandle = Character->MoveEndedDelegate.
+	                             AddUObject(this, &UCharacterStateBase::InvokeCharacterMoveEndedEvent);
+
 	Super::Init_Implementation();
 }
 
 void UCharacterStateBase::Enter_Implementation()
 {
-	MoveEndedHandle = Character->MoveEndedDelegate.
-	                             AddUObject(this, &UCharacterStateBase::InvokeCharacterMoveEndedEvent);
 	Super::Enter_Implementation();
 }
 
 void UCharacterStateBase::Exit_Implementation()
 {
-	Character->MoveEndedDelegate.Remove(MoveEndedHandle);
-
 	Super::Exit_Implementation();
 }

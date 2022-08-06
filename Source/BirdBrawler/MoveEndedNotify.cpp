@@ -7,9 +7,10 @@ void UMoveEndedNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBas
 {
 	Super::Notify(MeshComp, Animation);
 
-	if (const auto* Character = Cast<ABirdBrawlerCharacter>(MeshComp->GetOwner()))
+	if (auto* Character = Cast<ABirdBrawlerCharacter>(MeshComp->GetOwner()))
 	{
 		Character->InvokeMoveEndedDelegate(MoveName);
+		Character->SetCurrentMove("");
 
 		Debug::ScreenLog("Move ended notify");
 	}
