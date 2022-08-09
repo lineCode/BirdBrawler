@@ -41,6 +41,7 @@ public:
 	void OnCharacterMoveEnded(FName MoveName);
 
 protected:
+	bool StateActive{false};
 	FDelegateHandle MoveEndedHandle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -79,6 +80,4 @@ protected:
 	void InvokeCharacterMoveEndedEvent(FName MoveName);
 
 	virtual void Init_Implementation() override;
-	virtual void Enter_Implementation() override;
-	virtual void Exit_Implementation() override;
 };

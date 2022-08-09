@@ -68,8 +68,9 @@ void UCharacterStateBase::InvokeCharacterMoveEndedEvent(FName MoveName)
 	if (FSMOwner->IsStateActive(Name))
 	{
 		const std::string MoveNameStr = TCHAR_TO_UTF8(*(MoveName.ToString()));
+		const std::string StateNameStr = TCHAR_TO_UTF8(*(Name.ToString()));
 
-		Debug::ScreenLog(FString::Printf(TEXT("Move Ended: %hs"), MoveNameStr.c_str()));
+		BB_SLOG(FString::Printf(TEXT("[%hs] Move Ended: %hs"),StateNameStr.c_str(), MoveNameStr.c_str()));
 		OnCharacterMoveEnded(MoveName);
 	}
 }
@@ -91,14 +92,4 @@ void UCharacterStateBase::Init_Implementation()
 	                             AddUObject(this, &UCharacterStateBase::InvokeCharacterMoveEndedEvent);
 
 	Super::Init_Implementation();
-}
-
-void UCharacterStateBase::Enter_Implementation()
-{
-	Super::Enter_Implementation();
-}
-
-void UCharacterStateBase::Exit_Implementation()
-{
-	Super::Exit_Implementation();
 }

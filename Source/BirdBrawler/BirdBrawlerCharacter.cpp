@@ -69,7 +69,7 @@ void ABirdBrawlerCharacter::Tick(float DeltaSeconds)
 
 	Airborne = GetCharacterMovement()->IsFalling();
 
-	Debug::ScreenLog(10, FString::Printf(TEXT("Movement direction: %f"), MovementDirection));
+	BB_SLOGK(10, FString::Printf(TEXT("Movement direction: %f"), MovementDirection));
 }
 
 void ABirdBrawlerCharacter::MoveHorizontal(float Value)

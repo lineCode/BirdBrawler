@@ -203,9 +203,8 @@ void UMovesBufferComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		auto& Entry = Buffer.at(i);
 		const bool IsEmpty = Entry.Name == NoInput;
 		auto Message = IsEmpty ? "Empty" : Entry.Name;
-		const auto Color = IsEmpty ? FColor::White : FColor::Green;
 
-		Debug::ScreenLog(i, Message, 2.f, Color);
+		BB_SLOGK(i, Message);
 	}
 
 	BufferChanged = false;

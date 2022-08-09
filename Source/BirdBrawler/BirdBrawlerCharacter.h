@@ -10,6 +10,8 @@
 
 class UInputBuffer;
 
+#define NO_MOVE FName{""}
+
 DECLARE_MULTICAST_DELEGATE_OneParam(FMoveEnded, FName);
 
 UCLASS(config=Game)
