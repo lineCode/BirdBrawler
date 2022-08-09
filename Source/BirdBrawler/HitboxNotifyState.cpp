@@ -25,6 +25,13 @@ void UHitboxNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 		                                                  TargetTraceTypes, false, ActorsToIgnore,
 		                                                  EDrawDebugTrace::None, OutHit, true);
 
-		DrawDebugSphere(MeshComp->GetWorld(), SocketLocation, HitboxDataAsset->Radius, 15, FColor::Red, false);
+		DrawDebugSphere(MeshComp->GetWorld(), SocketLocation, HitboxDataAsset->Radius, 7, FColor::Red, false);
+
+		const auto Rotator = FRotator(HitboxDataAsset->KnockbackOrientation, 90.f, 0.f);
+		const auto KnockbackVector = Rotator.RotateVector(FVector(1.f, 0.f, 0.f));
+
+		const auto EndPoint = SocketLocation + KnockbackVector * 50.f;
+
+		DrawDebugDirectionalArrow(MeshComp->GetWorld(), SocketLocation, EndPoint, 10.f, FColor::Green, false);
 	}
 }
