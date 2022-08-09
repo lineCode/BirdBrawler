@@ -18,6 +18,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify", meta=(ExposeOnSpawn = true))
 	UHitboxDataAsset* HitboxDataAsset;
 
+	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
+	                         float TotalDuration) override;
+
+	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
+
 	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
 	                        float FrameDeltaTime) override;
+
+private:
+	UPROPERTY()
+	TArray<uint32> HitPawns;
 };

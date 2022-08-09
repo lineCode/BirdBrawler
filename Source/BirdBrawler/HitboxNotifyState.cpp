@@ -4,6 +4,21 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
 
+void UHitboxNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
+                                     float TotalDuration)
+{
+	Super::NotifyBegin(MeshComp, Animation, TotalDuration);
+
+	HitPawns.Empty();
+}
+
+void UHitboxNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
+{
+	Super::NotifyEnd(MeshComp, Animation);
+
+	HitPawns.Empty();
+}
+
 void UHitboxNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                     float FrameDeltaTime)
 {
@@ -14,6 +29,8 @@ void UHitboxNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 	if (HitboxDataAsset)
 	{
 		TArray<TEnumAsByte<EObjectTypeQuery>> TargetTraceTypes;
+
+		// TODO: filter by "hittable character" not by pawn
 		const auto PawnCollisionType = UEngineTypes::ConvertToObjectType(ECC_Pawn);
 		TargetTraceTypes.Add(PawnCollisionType);
 
@@ -27,8 +44,10 @@ void UHitboxNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 		                                                                      TargetTraceTypes, false, ActorsToIgnore,
 		                                                                      EDrawDebugTrace::None, OutHit, true);
 
-		if (DidHit)
+		if (DidHit && !HitPawns.Contains(OutHit.Actor->GetUniqueID()))
 		{
+			HitPawns.Emplace(OutHit.Actor->GetUniqueID());
+
 			if (auto* Character = Cast<ABirdBrawlerCharacter>(MeshComp->GetOwner()))
 			{
 				Character->EvaluateHitResult(OutHit);
