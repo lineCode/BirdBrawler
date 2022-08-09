@@ -4,9 +4,6 @@
 
 namespace
 {
-	constexpr auto BufferSizeFrames{6};
-	constexpr auto BufferFrameLength{.32f};
-
 	const FString NoInput{""};
 
 	const FString EntryStartJump{"StartJump"};

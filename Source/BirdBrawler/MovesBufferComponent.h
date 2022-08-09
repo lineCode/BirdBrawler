@@ -37,6 +37,12 @@ public:
 	bool MovingLeft{false};
 
 protected:
+	UPROPERTY(EditAnywhere)
+	int BufferSizeFrames{6};
+
+	UPROPERTY(EditAnywhere)
+	float BufferFrameLength{.32f};
+
 	std::deque<FInputBufferEntry> Buffer;
 	float ElapsedFrameTime = 0.f;
 	bool BufferChanged{false};
@@ -50,7 +56,7 @@ protected:
 	void ClearBuffer();
 
 	void OnMoveHorizontal(float Value);
-	
+
 	void OnStartJump();
 	void OnStopJump();
 	void OnStartMoveRight();

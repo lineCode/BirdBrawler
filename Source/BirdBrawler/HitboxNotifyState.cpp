@@ -1,5 +1,6 @@
 ﻿#include "HitboxNotifyState.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "DrawDebugHelpers.h"
 
 void UHitboxNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                     float FrameDeltaTime)
@@ -17,7 +18,9 @@ void UHitboxNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 
 	FHitResult OutHit;
 	const auto* World = MeshComp->GetWorld();
-	UKismetSystemLibrary::SphereTraceSingleForObjects(World, SocketLocation, SocketLocation, 30.f,
+	UKismetSystemLibrary::SphereTraceSingleForObjects(World, SocketLocation, SocketLocation, Radius,
 	                                                  TargetTraceTypes, false, ActorsToIgnore,
-	                                                  EDrawDebugTrace::ForDuration, OutHit, true);
+	                                                  EDrawDebugTrace::None, OutHit, true);
+
+	DrawDebugSphere(MeshComp->GetWorld(), SocketLocation, Radius, 15, FColor::Red, false);
 }
