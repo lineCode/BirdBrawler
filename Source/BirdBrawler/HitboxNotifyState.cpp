@@ -1,4 +1,6 @@
 ﻿#include "HitboxNotifyState.h"
+
+#include "BirdBrawlerCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
 
@@ -20,10 +22,18 @@ void UHitboxNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 
 		FHitResult OutHit;
 		const auto* World = MeshComp->GetWorld();
-		UKismetSystemLibrary::SphereTraceSingleForObjects(World, SocketLocation, SocketLocation,
-		                                                  HitboxDataAsset->Radius,
-		                                                  TargetTraceTypes, false, ActorsToIgnore,
-		                                                  EDrawDebugTrace::None, OutHit, true);
+		const auto DidHit = UKismetSystemLibrary::SphereTraceSingleForObjects(World, SocketLocation, SocketLocation,
+		                                                                      HitboxDataAsset->Radius,
+		                                                                      TargetTraceTypes, false, ActorsToIgnore,
+		                                                                      EDrawDebugTrace::None, OutHit, true);
+
+		if (DidHit)
+		{
+			if (auto* Character = Cast<ABirdBrawlerCharacter>(MeshComp->GetOwner()))
+			{
+				Character->EvaluateHitResult(OutHit);
+			}
+		}
 
 		DrawDebugSphere(MeshComp->GetWorld(), SocketLocation, HitboxDataAsset->Radius, 7, FColor::Red, false);
 

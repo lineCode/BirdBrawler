@@ -46,7 +46,6 @@ ABirdBrawlerCharacter::ABirdBrawlerCharacter()
 	Fsm = CreateDefaultSubobject<UFSM>(TEXT("ActionsFSM"));
 
 	MovesBufferComponent = CreateDefaultSubobject<UMovesBufferComponent>(TEXT("MovesBuffer"));
-	MovesEffectorComponent = CreateDefaultSubobject<UMovesEffectorComponent>(TEXT("MovesEffector"));
 }
 
 void ABirdBrawlerCharacter::BeginPlay()
@@ -115,11 +114,6 @@ void ABirdBrawlerCharacter::SetCurrentMove(FName MoveName)
 	CurrentMove = MoveName;
 }
 
-bool ABirdBrawlerCharacter::IsMovementRequested() const
-{
-	return MovementDirection != 0.f;
-}
-
 float ABirdBrawlerCharacter::GetInputMovement() const
 {
 	return GetMovesBufferComponent()->InputMovement;
@@ -128,4 +122,10 @@ float ABirdBrawlerCharacter::GetInputMovement() const
 void ABirdBrawlerCharacter::InvokeMoveEndedDelegate(FName MoveName) const
 {
 	MoveEndedDelegate.Broadcast(MoveName);
+}
+
+void ABirdBrawlerCharacter::EvaluateHitResult(const FHitResult& HitResult)
+{
+	const auto* HitActor = HitResult.GetActor();
+	BB_SLOG(HitActor->GetName());
 }

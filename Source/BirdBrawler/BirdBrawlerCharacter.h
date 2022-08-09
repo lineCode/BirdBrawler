@@ -40,7 +40,7 @@ protected:
 
 	float MovementDirection{0.f};
 	bool Airborne{false};
-	FName CurrentMove{""};
+	FName CurrentMove{NO_MOVE};
 
 public:
 	ABirdBrawlerCharacter();
@@ -73,18 +73,16 @@ public:
 	void SetCurrentMove(FName MoveName);
 
 	UFUNCTION(BlueprintCallable)
-	bool IsMovementRequested() const;
-
-	UFUNCTION(BlueprintCallable)
 	float GetInputMovement() const;
 
 	UFUNCTION(BlueprintCallable)
 	void InvokeMoveEndedDelegate(FName MoveName) const;
 
+	void EvaluateHitResult(const FHitResult& HitResult);
+
 	FMoveEnded MoveEndedDelegate;
 
 	FORCEINLINE UMovesBufferComponent* GetMovesBufferComponent() const { return MovesBufferComponent; }
-	FORCEINLINE UMovesEffectorComponent* GetMovesEffectorComponent() const { return MovesEffectorComponent; }
 	FORCEINLINE UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
 	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 };
