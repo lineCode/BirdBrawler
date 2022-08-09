@@ -55,19 +55,19 @@ void UMovesBufferComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetOwner()->InputComponent->BindAction("Jump", IE_Pressed, this, &UMovesBufferComponent::OnStartJump);
-	GetOwner()->InputComponent->BindAction("Jump", IE_Released, this, &UMovesBufferComponent::OnStopJump);
+	if (auto* Input = GetOwner()->InputComponent)
+	{
+		Input->BindAction("Jump", IE_Pressed, this, &UMovesBufferComponent::OnStartJump);
+		Input->BindAction("Jump", IE_Released, this, &UMovesBufferComponent::OnStopJump);
 
-	GetOwner()->InputComponent->BindAction("MoveRight", IE_Pressed, this,
-	                                       &UMovesBufferComponent::OnStartMoveRight);
-	GetOwner()->InputComponent->BindAction("MoveRight", IE_Released, this,
-	                                       &UMovesBufferComponent::OnStopMoveRight);
-	GetOwner()->InputComponent->BindAction("MoveLeft", IE_Pressed, this,
-	                                       &UMovesBufferComponent::OnStartMoveLeft);
-	GetOwner()->InputComponent->BindAction("MoveLeft", IE_Released, this,
-	                                       &UMovesBufferComponent::OnStopMoveLeft);
+		Input->BindAction("MoveRight", IE_Pressed, this, &UMovesBufferComponent::OnStartMoveRight);
+		Input->BindAction("MoveRight", IE_Released, this, &UMovesBufferComponent::OnStopMoveRight);
 
-	GetOwner()->InputComponent->BindAction("Attack", IE_Pressed, this, &UMovesBufferComponent::OnAttack);
+		Input->BindAction("MoveLeft", IE_Pressed, this, &UMovesBufferComponent::OnStartMoveLeft);
+		Input->BindAction("MoveLeft", IE_Released, this, &UMovesBufferComponent::OnStopMoveLeft);
+
+		Input->BindAction("Attack", IE_Pressed, this, &UMovesBufferComponent::OnAttack);
+	}
 
 	ClearBuffer();
 }
