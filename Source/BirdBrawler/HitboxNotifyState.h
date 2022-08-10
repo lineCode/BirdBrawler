@@ -28,5 +28,5 @@ public:
 
 private:
 	UPROPERTY()
-	TArray<uint32> HitPawns;
+	TArray<uint32> HitPawsIds;
 };

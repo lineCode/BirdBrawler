@@ -18,4 +18,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float KnockbackForce{100.f};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Priority{0};
 };

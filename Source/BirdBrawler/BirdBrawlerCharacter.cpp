@@ -19,7 +19,7 @@ ABirdBrawlerCharacter::ABirdBrawlerCharacter()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	// Create a camera boom attached to the root (capsule)
+	/*// Create a camera boom attached to the root (capsule)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->SetUsingAbsoluteRotation(true); // Rotation of the character should not affect rotation of boom
@@ -31,7 +31,7 @@ ABirdBrawlerCharacter::ABirdBrawlerCharacter()
 	// Create a camera and attach to boom
 	SideViewCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("SideViewCamera"));
 	SideViewCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	SideViewCameraComponent->bUsePawnControlRotation = false; // We don't want the controller rotating the camera
+	SideViewCameraComponent->bUsePawnControlRotation = false; // We don't want the controller rotating the camera*/
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Face in the direction we are moving..
@@ -126,6 +126,6 @@ void ABirdBrawlerCharacter::InvokeMoveEndedDelegate(FName MoveName) const
 
 void ABirdBrawlerCharacter::EvaluateHitResult(const FHitResult& HitResult)
 {
-	const auto* HitActor = HitResult.GetActor();
+	const AActor* HitActor = HitResult.GetActor();
 	BB_SLOG(HitActor->GetName());
 }
