@@ -1,10 +1,10 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "MoveDataAsset.h"
 #include "Components/ActorComponent.h"
 #include "MovesEffectorComponent.generated.h"
 
+class ABirdBrawlerCharacter;
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class BIRDBRAWLER_API UMovesEffectorComponent : public UActorComponent
 {
@@ -20,5 +20,6 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	void ExecuteMove(UMoveDataAsset* MoveDataAsset);
+	// TODO: this will not only hit ABirdBrawlerCharacter but also other entities (make hittable entity?)
+	void ExecuteMove(const FVector& Knockback, const ABirdBrawlerCharacter& Target);
 };

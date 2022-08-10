@@ -1,5 +1,7 @@
 ﻿#include "MovesEffectorComponent.h"
 
+#include "BirdBrawlerCharacter.h"
+
 UMovesEffectorComponent::UMovesEffectorComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -16,9 +18,6 @@ void UMovesEffectorComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UMovesEffectorComponent::ExecuteMove(UMoveDataAsset* MoveDataAsset)
+void UMovesEffectorComponent::ExecuteMove(const FVector& Knockback, const ABirdBrawlerCharacter& Target)
 {
-	verify(MoveDataAsset);
-
-	
 }

@@ -32,6 +32,7 @@ ABirdBrawlerCharacter::ABirdBrawlerCharacter()
 	Fsm = CreateDefaultSubobject<UFSM>(TEXT("ActionsFSM"));
 
 	MovesBufferComponent = CreateDefaultSubobject<UMovesBufferComponent>(TEXT("MovesBuffer"));
+	MovesEffectorComponent = CreateDefaultSubobject<UMovesEffectorComponent>(TEXT("MovesEffector"));
 }
 
 void ABirdBrawlerCharacter::BeginPlay()
@@ -55,6 +56,11 @@ void ABirdBrawlerCharacter::Tick(float DeltaSeconds)
 	Airborne = GetCharacterMovement()->IsFalling();
 
 	BB_SLOGK(10, FString::Printf(TEXT("Movement direction: %f"), MovementDirection));
+}
+
+void ABirdBrawlerCharacter::OnHit(const FVector& Knockback, const ACharacter& Hitter)
+{
+	IHittable::OnHit(Knockback, Hitter);
 }
 
 void ABirdBrawlerCharacter::MoveHorizontal(float Value)

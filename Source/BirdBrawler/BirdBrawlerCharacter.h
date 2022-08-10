@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "FSM.h"
+#include "IHittable.h"
 #include "MovesBufferComponent.h"
 #include "BirdBrawlerCharacter.generated.h"
 
@@ -15,7 +16,7 @@ class UInputBuffer;
 DECLARE_MULTICAST_DELEGATE_OneParam(FMoveEnded, FName);
 
 UCLASS(config=Game)
-class ABirdBrawlerCharacter : public ACharacter
+class ABirdBrawlerCharacter : public ACharacter, public IHittable
 {
 	GENERATED_BODY()
 
@@ -48,6 +49,8 @@ public:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void OnHit(const FVector& Knockback, const ACharacter& Hitter) override;
 
 	void MoveHorizontal(float Val);
 
@@ -83,4 +86,5 @@ public:
 	FMoveEnded MoveEndedDelegate;
 
 	FORCEINLINE UMovesBufferComponent* GetMovesBufferComponent() const { return MovesBufferComponent; }
+	FORCEINLINE UMovesEffectorComponent* GetMovesEffectorComponent() const { return MovesEffectorComponent; }
 };
