@@ -23,7 +23,7 @@ bool UMovesBufferComponent::IsInputBuffered(const FString& Input, bool ConsumeEn
 {
 	for (int i = 0; i < Buffer.size(); ++i)
 	{
-		auto& Entry = Buffer.at(i);
+		FInputBufferEntry& Entry = Buffer.at(i);
 		if (Entry.Name != NoInput && Entry.Name == Input && !Entry.Used)
 		{
 			if (ConsumeEntry)
@@ -40,7 +40,7 @@ bool UMovesBufferComponent::IsInputBuffered(const FString& Input, bool ConsumeEn
 TArray<FString> UMovesBufferComponent::GetBufferedInputs() const
 {
 	TArray<FString> BufferedInputs;
-	for (auto& Input : Buffer)
+	for (const FInputBufferEntry& Input : Buffer)
 	{
 		if (Input.Name != NoInput && !Input.Used)
 		{
@@ -55,7 +55,7 @@ void UMovesBufferComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (auto* Input = GetOwner()->InputComponent)
+	if (UInputComponent* Input = GetOwner()->InputComponent)
 	{
 		Input->BindAction("Jump", IE_Pressed, this, &UMovesBufferComponent::OnStartJump);
 		Input->BindAction("Jump", IE_Released, this, &UMovesBufferComponent::OnStopJump);
@@ -87,7 +87,7 @@ void UMovesBufferComponent::AddMoveToBuffer(const FString& MoveName)
 
 bool UMovesBufferComponent::BufferContainsConsumableInput(const FString& Input) const
 {
-	for (const auto& CurrentInput : Buffer)
+	for (const FInputBufferEntry& CurrentInput : Buffer)
 	{
 		if (CurrentInput.Name == Input && !CurrentInput.Used)
 		{
@@ -197,7 +197,7 @@ void UMovesBufferComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	for (int i = 0; i < Buffer.size(); ++i)
 	{
-		auto& Entry = Buffer.at(i);
+		FInputBufferEntry& Entry = Buffer.at(i);
 		const bool IsEmpty = Entry.Name == NoInput;
 		auto Message = IsEmpty ? "Empty" : Entry.Name;
 
@@ -213,7 +213,7 @@ void UMovesBufferComponent::UseBufferedInput(const FString& Input)
 {
 	verify(BufferContainsConsumableInput(Input));
 
-	for (auto& CurrentInput : Buffer)
+	for (FInputBufferEntry& CurrentInput : Buffer)
 	{
 		if (CurrentInput.Name == Input)
 		{

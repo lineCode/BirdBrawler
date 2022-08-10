@@ -83,6 +83,4 @@ public:
 	FMoveEnded MoveEndedDelegate;
 
 	FORCEINLINE UMovesBufferComponent* GetMovesBufferComponent() const { return MovesBufferComponent; }
-	FORCEINLINE UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
-	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 };
