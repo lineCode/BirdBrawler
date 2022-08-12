@@ -3,6 +3,7 @@
 #include "BirdBrawlerCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
+#include "Components/SkeletalMeshComponent.h"
 
 void UHitboxNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                      float TotalDuration)
@@ -44,15 +45,6 @@ void UHitboxNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 		                                                                      TargetTraceTypes, false, ActorsToIgnore,
 		                                                                      EDrawDebugTrace::None, OutHit, true);
 
-		if (DidHit && !HitPawsIds.Contains(OutHit.Actor->GetUniqueID()))
-		{
-			HitPawsIds.Emplace(OutHit.Actor->GetUniqueID());
-
-			if (auto* Character = Cast<ABirdBrawlerCharacter>(MeshComp->GetOwner()))
-			{
-				Character->EvaluateHitResult(OutHit);
-			}
-		}
 
 		DrawDebugSphere(MeshComp->GetWorld(), SocketLocation, HitboxDataAsset->Radius, 7, FColor::Red, false);
 
@@ -60,6 +52,16 @@ void UHitboxNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 		const FVector KnockbackVector = Rotator.RotateVector(FVector(1.f, 0.f, 0.f));
 
 		const FVector EndPoint = SocketLocation + KnockbackVector * 50.f;
+
+		if (DidHit && !HitPawsIds.Contains(OutHit.Actor->GetUniqueID()))
+		{
+			HitPawsIds.Emplace(OutHit.Actor->GetUniqueID());
+
+			if (auto* Hittable = Cast<IHittable>(OutHit.Actor))
+			{
+				Hittable->OnHit(KnockbackVector, *MeshComp->GetOwner());
+			}
+		}
 
 		DrawDebugDirectionalArrow(MeshComp->GetWorld(), SocketLocation, EndPoint, 10.f, FColor::Green, false);
 	}

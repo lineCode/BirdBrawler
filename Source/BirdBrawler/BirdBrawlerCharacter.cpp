@@ -58,9 +58,13 @@ void ABirdBrawlerCharacter::Tick(float DeltaSeconds)
 	BB_SLOGK(10, FString::Printf(TEXT("Movement direction: %f"), MovementDirection));
 }
 
-void ABirdBrawlerCharacter::OnHit(const FVector& Knockback, const ACharacter& Hitter)
+void ABirdBrawlerCharacter::OnHit(const FVector& Knockback, const AActor& Hitter)
 {
 	IHittable::OnHit(Knockback, Hitter);
+
+	BB_SLOG_ERR("REACTION");
+
+	GoToFsmState("LightReaction");
 }
 
 void ABirdBrawlerCharacter::MoveHorizontal(float Value)

@@ -4,6 +4,8 @@
 #include "UObject/Interface.h"
 #include "IHittable.generated.h"
 
+class ACharacter;
+
 UINTERFACE()
 class UHittable : public UInterface
 {
@@ -15,5 +17,5 @@ class BIRDBRAWLER_API IHittable
 	GENERATED_BODY()
 
 public:
-	virtual void OnHit(const FVector& Knockback, const ACharacter& Hitter);
+	virtual void OnHit(const FVector& Knockback, const AActor& Hitter);
 };

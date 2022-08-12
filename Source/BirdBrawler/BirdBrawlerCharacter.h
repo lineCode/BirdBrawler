@@ -50,7 +50,7 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void Tick(float DeltaSeconds) override;
 
-	virtual void OnHit(const FVector& Knockback, const ACharacter& Hitter) override;
+	virtual void OnHit(const FVector& Knockback, const AActor& Hitter) override;
 
 	void MoveHorizontal(float Val);
 
