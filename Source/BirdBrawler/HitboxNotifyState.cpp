@@ -10,14 +10,14 @@ void UHitboxNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequ
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration);
 
-	HitPawsIds.Empty();
+	HitPawnsIds.Empty();
 }
 
 void UHitboxNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	Super::NotifyEnd(MeshComp, Animation);
 
-	HitPawsIds.Empty();
+	HitPawnsIds.Empty();
 }
 
 void UHitboxNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
@@ -45,7 +45,6 @@ void UHitboxNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 		                                                                      TargetTraceTypes, false, ActorsToIgnore,
 		                                                                      EDrawDebugTrace::None, OutHit, true);
 
-
 		DrawDebugSphere(MeshComp->GetWorld(), SocketLocation, HitboxDataAsset->Radius, 7, FColor::Red, false);
 
 		const FRotator Rotator = FRotator(HitboxDataAsset->KnockbackOrientation, 90.f, 0.f);
@@ -53,9 +52,9 @@ void UHitboxNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSeque
 
 		const FVector EndPoint = SocketLocation + KnockbackVector * 50.f;
 
-		if (DidHit && !HitPawsIds.Contains(OutHit.Actor->GetUniqueID()))
+		if (DidHit && !HitPawnsIds.Contains(OutHit.Actor->GetUniqueID()))
 		{
-			HitPawsIds.Emplace(OutHit.Actor->GetUniqueID());
+			HitPawnsIds.Emplace(OutHit.Actor->GetUniqueID());
 
 			if (auto* Hittable = Cast<IHittable>(OutHit.Actor))
 			{
