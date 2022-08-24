@@ -8,14 +8,6 @@ void UCharacterStateBase::OnInputBuffered_Implementation(FName Entry)
 {
 }
 
-void UCharacterStateBase::PlayAnimation(UAnimationAsset* AnimationAsset, const bool Loop)
-{
-	verify(AnimationAsset);
-	verify(SkeletalMesh);
-
-	SkeletalMesh->PlayAnimation(AnimationAsset, Loop);
-}
-
 bool UCharacterStateBase::IsInputBuffered(const FString& Input, TEnumAsByte<EInputBufferedOutcome>& Branches)
 {
 	const auto IsBuffered = Character->GetMovesBufferComponent()->IsInputBuffered(Input);
@@ -62,6 +54,11 @@ void UCharacterStateBase::GoToFsmState(FName StateName) const
 	Character->GoToFsmState(StateName);
 }
 
+void UCharacterStateBase::PlayAnimation(UAnimationAsset* AnimationAsset, bool Loop /*= false*/) const
+{
+	Character->PlayAnimation(AnimationAsset, Loop);
+}
+
 void UCharacterStateBase::InvokeCharacterMoveEndedEvent(FName MoveName)
 {
 	// TODO: ugly af
@@ -88,8 +85,7 @@ void UCharacterStateBase::Init_Implementation()
 	verify(SkeletalMesh);
 
 	// TODO: this should be in Enter_Implementation, fix it
-	MoveEndedHandle = Character->MoveEndedDelegate.
-	                             AddUObject(this, &UCharacterStateBase::InvokeCharacterMoveEndedEvent);
+	Character->MoveEndedDelegate.AddUObject(this, &UCharacterStateBase::InvokeCharacterMoveEndedEvent);
 
 	Super::Init_Implementation();
 }

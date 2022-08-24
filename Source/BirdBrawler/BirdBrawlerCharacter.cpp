@@ -4,6 +4,7 @@
 
 #include "Debug.h"
 #include "MovesEffectorComponent.h"
+#include "Animation/CharacterAnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -33,6 +34,7 @@ ABirdBrawlerCharacter::ABirdBrawlerCharacter()
 
 	MovesBufferComponent = CreateDefaultSubobject<UMovesBufferComponent>(TEXT("MovesBuffer"));
 	MovesEffectorComponent = CreateDefaultSubobject<UMovesEffectorComponent>(TEXT("MovesEffector"));
+	SkeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>();
 }
 
 void ABirdBrawlerCharacter::BeginPlay()
@@ -108,6 +110,15 @@ FName ABirdBrawlerCharacter::GetCurrentMove() const
 void ABirdBrawlerCharacter::SetCurrentMove(FName MoveName)
 {
 	CurrentMove = MoveName;
+
+	InvokeCurrentMoveChangedDelegate(MoveName);
+
+	UCharacterAnimInstance* CharacterAnimInstance = Cast<UCharacterAnimInstance>(
+		GetSkeletalMeshComponent()->GetAnimInstance());
+
+	verify(CharacterAnimInstance);
+
+	CharacterAnimInstance->CurrentMoveChanged(MoveName);
 }
 
 float ABirdBrawlerCharacter::GetInputMovement() const
@@ -118,6 +129,16 @@ float ABirdBrawlerCharacter::GetInputMovement() const
 void ABirdBrawlerCharacter::InvokeMoveEndedDelegate(FName MoveName) const
 {
 	MoveEndedDelegate.Broadcast(MoveName);
+}
+
+void ABirdBrawlerCharacter::InvokeCurrentMoveChangedDelegate(FName MoveName) const
+{
+	CurrentMoveChangedDelegate.Broadcast(MoveName);
+}
+
+void ABirdBrawlerCharacter::PlayAnimation(UAnimationAsset* AnimationAsset, bool Loop /*= false*/) const
+{
+	GetSkeletalMeshComponent()->PlayAnimation(AnimationAsset, Loop);
 }
 
 void ABirdBrawlerCharacter::EvaluateHitResult(const FHitResult& HitResult)

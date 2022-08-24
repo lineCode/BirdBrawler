@@ -14,6 +14,7 @@ class UInputBuffer;
 #define NO_MOVE FName{""}
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FMoveEnded, FName);
+DECLARE_MULTICAST_DELEGATE_OneParam(FCurrentMoveChanged, FName);
 
 UCLASS(config=Game)
 class ABirdBrawlerCharacter : public ACharacter, public IHittable
@@ -34,6 +35,9 @@ class ABirdBrawlerCharacter : public ACharacter, public IHittable
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UMovesEffectorComponent* MovesEffectorComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class USkeletalMeshComponent* SkeletalMeshComponent;
 
 protected:
 	UPROPERTY(EditAnywhere, Category="FSM")
@@ -81,10 +85,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InvokeMoveEndedDelegate(FName MoveName) const;
 
+	UFUNCTION(BlueprintCallable)
+	void InvokeCurrentMoveChangedDelegate(FName MoveName) const;
+
+	UFUNCTION(BlueprintCallable)
+	void PlayAnimation(UAnimationAsset* AnimationAsset, bool Loop = false) const;
+
 	void EvaluateHitResult(const FHitResult& HitResult);
 
 	FMoveEnded MoveEndedDelegate;
+	FCurrentMoveChanged CurrentMoveChangedDelegate;
 
 	FORCEINLINE UMovesBufferComponent* GetMovesBufferComponent() const { return MovesBufferComponent; }
 	FORCEINLINE UMovesEffectorComponent* GetMovesEffectorComponent() const { return MovesEffectorComponent; }
+	FORCEINLINE USkeletalMeshComponent* GetSkeletalMeshComponent() const { return SkeletalMeshComponent; }
 };

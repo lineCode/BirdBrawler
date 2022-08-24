@@ -50,9 +50,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	USkeletalMeshComponent* SkeletalMesh{nullptr};
 
-	UFUNCTION(BlueprintCallable)
-	void PlayAnimation(UAnimationAsset* AnimationAsset, const bool Loop);
-
 	UFUNCTION(BlueprintCallable, Meta = (ExpandEnumAsExecs = "Branches"))
 	bool IsInputBuffered(const FString& Input, TEnumAsByte<EInputBufferedOutcome>& Branches);
 
@@ -76,6 +73,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void GoToFsmState(FName StateName) const;
+
+	UFUNCTION(BlueprintCallable)
+	void PlayAnimation(UAnimationAsset* AnimationAsset, bool Loop = false) const;
 
 	void InvokeCharacterMoveEndedEvent(FName MoveName);
 
