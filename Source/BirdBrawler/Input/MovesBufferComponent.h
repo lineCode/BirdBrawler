@@ -5,7 +5,7 @@
 
 #include <deque>
 
-#include "BirdBrawlerCharacter.h"
+#include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
 #include "MovesBufferComponent.generated.h"
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))

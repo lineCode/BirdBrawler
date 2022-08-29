@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "FSM.h"
-#include "IHittable.h"
-#include "MovesBufferComponent.h"
+#include "BirdBrawler/Combat/IHittable.h"
+#include "BirdBrawler/Input/MovesBufferComponent.h"
 #include "BirdBrawlerCharacter.generated.h"
 
 class UInputBuffer;

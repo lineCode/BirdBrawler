@@ -1,7 +1,5 @@
 ﻿#include "MovesEffectorComponent.h"
 
-#include "BirdBrawlerCharacter.h"
-
 UMovesEffectorComponent::UMovesEffectorComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;

@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include "BirdBrawlerCharacter.h"
-#include "Debug.h"
+#include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
+#include "BirdBrawler/Debug/Debug.h"
 
 void UMoveEndedNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {

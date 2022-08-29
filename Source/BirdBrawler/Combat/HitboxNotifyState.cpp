@@ -1,6 +1,6 @@
 ﻿#include "HitboxNotifyState.h"
 
-#include "BirdBrawlerCharacter.h"
+#include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
 #include "Components/SkeletalMeshComponent.h"

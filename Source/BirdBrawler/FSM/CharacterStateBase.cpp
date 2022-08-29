@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Debug.h"
+#include "BirdBrawler/Debug/Debug.h"
 
 void UCharacterStateBase::OnInputBuffered_Implementation(FName Entry)
 {

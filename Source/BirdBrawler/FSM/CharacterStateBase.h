@@ -1,8 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BirdBrawlerCharacter.h"
 #include "StateBase.h"
+#include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
 #include "CharacterStateBase.generated.h"
 
 UENUM(BlueprintType)

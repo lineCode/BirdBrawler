@@ -1,6 +1,6 @@
 #include "MovesBufferComponent.h"
 
-#include "Debug.h"
+#include "BirdBrawler/Debug/Debug.h"
 
 namespace
 {

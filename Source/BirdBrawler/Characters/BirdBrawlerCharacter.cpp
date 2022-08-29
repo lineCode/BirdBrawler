@@ -2,10 +2,10 @@
 
 #include "BirdBrawlerCharacter.h"
 
-#include "Debug.h"
-#include "MovesEffectorComponent.h"
-#include "Animation/CharacterAnimInstance.h"
-#include "Camera/CameraComponent.h"
+#include "BirdBrawler/Debug/Debug.h"
+#include "BirdBrawler/Combat/MovesEffectorComponent.h"
+#include "BirdBrawler/Animation/CharacterAnimInstance.h"
+#include "BirdBrawler/Combat/IHittable.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
