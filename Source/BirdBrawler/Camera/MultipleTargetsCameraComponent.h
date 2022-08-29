@@ -19,6 +19,12 @@ protected:
 	UPROPERTY(EditAnywhere)
 	bool AutoAddTargetsOnBeginPlay{true};
 
+	UPROPERTY(EditAnywhere)
+	float MovementDamping{2.f};
+
+	UPROPERTY(EditAnywhere)
+	FVector PositionOffset;
+
 	virtual void BeginPlay() override;
 
 public:
@@ -32,8 +38,11 @@ private:
 	UPROPERTY()
 	TArray<AActor*> Targets;
 
+	UPROPERTY()
+	TMap<AActor*, FVector> TargetsCentersMap;
+
 	void AddAvailableTargets();
 
 	FVector GetCenterPosition() const;
-	void UpdateCameraPosition() const;
+	void UpdateCameraPosition(float DeltaTime) const;
 };

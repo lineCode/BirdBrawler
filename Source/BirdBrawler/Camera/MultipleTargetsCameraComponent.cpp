@@ -24,7 +24,7 @@ void UMultipleTargetsCameraComponent::TickComponent(float DeltaTime, ELevelTick 
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	UpdateCameraPosition();
+	UpdateCameraPosition(DeltaTime);
 }
 
 bool UMultipleTargetsCameraComponent::AddTarget(AActor* Target)
@@ -35,7 +35,6 @@ bool UMultipleTargetsCameraComponent::AddTarget(AActor* Target)
 	}
 
 	Targets.Add(Target);
-
 	return true;
 }
 
@@ -47,31 +46,50 @@ bool UMultipleTargetsCameraComponent::RemoveTarget(AActor* Target)
 	}
 
 	Targets.Remove(Target);
-
 	return true;
 }
 
 void UMultipleTargetsCameraComponent::AddAvailableTargets()
 {
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABirdBrawlerCharacter::StaticClass(), Targets);
+	TArray<AActor*> AllActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABirdBrawlerCharacter::StaticClass(), AllActors);
+
+	for (AActor* Actor : AllActors)
+	{
+		AddTarget(Actor);
+	}
 }
 
 FVector UMultipleTargetsCameraComponent::GetCenterPosition() const
 {
-	FVector Center = GetOwner()->GetActorLocation();
-	if (Targets.Num() > 0)
+	if (Targets.Num() == 0)
 	{
-		FVector BoxExtents;
-		UGameplayStatics::GetActorArrayBounds(Targets, false, Center, BoxExtents);
-
-		const FVector TargetLocation = FVector(GetOwner()->GetActorLocation().X, Center.Y, Center.Z);
-		Center = TargetLocation;
+		return GetOwner()->GetActorLocation();
 	}
 
-	return Center;
+	if (Targets.Num() == 1)
+	{
+		return Targets[0]->GetActorLocation();
+	}
+
+	TArray<FVector> AllLocations;
+	for (const AActor* Target : Targets)
+	{
+		AllLocations.Add(Target->GetActorLocation());
+	}
+
+	FVector Sum = AllLocations[0];
+	for (int i = 1; i < AllLocations.Num(); ++i)
+	{
+		Sum += AllLocations[i];
+	}
+
+	Sum /= AllLocations.Num();
+	return FVector(GetOwner()->GetActorLocation().X, Sum.Y, Sum.Z);
 }
 
-void UMultipleTargetsCameraComponent::UpdateCameraPosition() const
+void UMultipleTargetsCameraComponent::UpdateCameraPosition(float DeltaTime) const
 {
-	GetOwner()->SetActorLocation(GetCenterPosition());
+	GetOwner()->SetActorLocation(FMath::Lerp(GetOwner()->GetActorLocation(), GetCenterPosition() + PositionOffset,
+	                                         MovementDamping * DeltaTime));
 }
