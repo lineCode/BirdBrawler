@@ -8,6 +8,7 @@
 #include "BirdBrawler/Combat/IHittable.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 
 ABirdBrawlerCharacter::ABirdBrawlerCharacter()
