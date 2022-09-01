@@ -65,8 +65,6 @@ void ABirdBrawlerCharacter::OnHit(const FVector& Knockback, const AActor& Hitter
 {
 	IHittable::OnHit(Knockback, Hitter);
 
-	BB_SLOG_ERR("REACTION");
-
 	GoToFsmState("LightReaction");
 }
 

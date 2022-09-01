@@ -1,6 +1,7 @@
 ﻿#include "MultipleTargetsCameraComponent.h"
 
 #include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
+#include "BirdBrawler/Debug/Debug.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -17,6 +18,9 @@ void UMultipleTargetsCameraComponent::BeginPlay()
 	{
 		AddAvailableTargets();
 	}
+
+	CameraComponent = GetOwner()->FindComponentByClass<UCameraComponent>();
+	verify(CameraComponent);
 }
 
 void UMultipleTargetsCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -25,6 +29,7 @@ void UMultipleTargetsCameraComponent::TickComponent(float DeltaTime, ELevelTick 
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	UpdateCameraPosition(DeltaTime);
+	//UpdateCameraZoom(DeltaTime);
 }
 
 bool UMultipleTargetsCameraComponent::AddTarget(AActor* Target)
@@ -69,7 +74,10 @@ FVector UMultipleTargetsCameraComponent::GetCenterPosition() const
 
 	if (Targets.Num() == 1)
 	{
-		return Targets[0]->GetActorLocation();
+		const FVector MyLocation = GetOwner()->GetActorLocation();
+		const FVector TargetLocation = Targets[0]->GetActorLocation();
+
+		return FVector(MyLocation.X, TargetLocation.Y, TargetLocation.Z);
 	}
 
 	TArray<FVector> AllLocations;
@@ -92,4 +100,29 @@ void UMultipleTargetsCameraComponent::UpdateCameraPosition(float DeltaTime) cons
 {
 	GetOwner()->SetActorLocation(FMath::Lerp(GetOwner()->GetActorLocation(), GetCenterPosition() + PositionOffset,
 	                                         MovementDamping * DeltaTime));
+}
+
+void UMultipleTargetsCameraComponent::UpdateCameraZoom(float DeltaTime) const
+{
+	FVector OutCenter, OutExtents;
+	UGameplayStatics::GetActorArrayBounds(Targets, false, OutCenter, OutExtents);
+
+	// TODO: is 0 always the right case for player id?
+	if (const auto* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	{
+		const FVector BoundsTop = FVector(OutCenter.X, OutCenter.Y + OutExtents.Y / 2.f, OutCenter.Z);
+		const FVector BoundsBottom = FVector(OutCenter.X, OutCenter.Y - OutExtents.Y / 2.f, OutCenter.Z);
+
+		FVector2D OutScreenTop;
+		const bool TopProjectionOk = PlayerController->ProjectWorldLocationToScreen(BoundsTop, OutScreenTop);
+
+		FVector2D OutScreenBottom;
+		const bool BottomProjectionOk = PlayerController->ProjectWorldLocationToScreen(BoundsBottom, OutScreenBottom);
+
+		if (TopProjectionOk && BottomProjectionOk)
+		{
+			const FVector2D VerticalScreenDistance = OutScreenTop - OutScreenBottom;
+			CameraComponent->SetFieldOfView(VerticalScreenDistance.Size());
+		}
+	}
 }

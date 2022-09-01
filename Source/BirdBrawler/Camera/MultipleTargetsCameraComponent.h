@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "Camera/CameraComponent.h"
 #include "Components/ActorComponent.h"
 #include "MultipleTargetsCameraComponent.generated.h"
 
@@ -41,8 +42,13 @@ private:
 	UPROPERTY()
 	TMap<AActor*, FVector> TargetsCentersMap;
 
+	UPROPERTY()
+	UCameraComponent* CameraComponent;
+
 	void AddAvailableTargets();
 
 	FVector GetCenterPosition() const;
+
 	void UpdateCameraPosition(float DeltaTime) const;
+	void UpdateCameraZoom(float DeltaTime) const;
 };

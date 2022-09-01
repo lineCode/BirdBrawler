@@ -23,9 +23,6 @@ public:
 
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 
-	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-	                        float FrameDeltaTime) override;
-
 protected:
 	UPROPERTY()
 	TArray<uint32> HitPawnsIds;
