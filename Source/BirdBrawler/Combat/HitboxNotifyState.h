@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "HitboxDataAsset.h"
-#include "MoveDataAsset.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "HitboxNotifyState.generated.h"
 
@@ -18,9 +17,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify", meta=(ExposeOnSpawn = true))
 	UHitboxDataAsset* HitboxDataAsset;
 
-	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-	                         float TotalDuration) override;
-
+	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 
 protected:

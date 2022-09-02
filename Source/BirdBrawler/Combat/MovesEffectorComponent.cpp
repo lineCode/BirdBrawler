@@ -9,11 +9,6 @@ UMovesEffectorComponent::UMovesEffectorComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UMovesEffectorComponent::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 {
 	TArray<TEnumAsByte<EObjectTypeQuery>> TargetTraceTypes;
@@ -34,8 +29,7 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 
 	DrawDebugSphere(HitboxData.World, Location, HitboxData.HitboxDataAsset->Radius, 7, FColor::Red, false);
 
-	const FRotator Rotator = FRotator(HitboxData.HitboxDataAsset->KnockbackOrientation, 90.f, 0.f);
-	const FVector KnockbackVector = Rotator.RotateVector(FVector(1.f, 0.f, 0.f));
+	const FVector KnockbackVector = GetKnockbackVector(HitboxData.HitboxDataAsset);
 
 	const FVector EndPoint = Location + KnockbackVector * 50.f;
 
@@ -50,7 +44,7 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 		}
 	}
 
-	DrawDebugDirectionalArrow(HitboxData.World, HitboxData.Location, EndPoint, 10.f, FColor::Green, false);
+	DrawDebugDirectionalArrow(HitboxData.World, Location, EndPoint, 10.f, FColor::Red, false);
 }
 
 void UMovesEffectorComponent::RemoveHitboxDataById(const uint32 Id)
@@ -99,4 +93,15 @@ void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAss
 void UMovesEffectorComponent::DisableHitbox(const uint32 Id)
 {
 	RemoveHitboxDataById(Id);
+}
+
+FHitboxData* UMovesEffectorComponent::GetHitboxData(const uint32 Id)
+{
+	return ActiveHitboxes.FindByPredicate([&](const FHitboxData& HitboxData) { return HitboxData.Id == Id; });
+}
+
+FVector UMovesEffectorComponent::GetKnockbackVector(const UHitboxDataAsset* HitboxDataAsset)
+{
+	const FRotator Rotator = FRotator(HitboxDataAsset->KnockbackOrientation, 90.f, 0.f);
+	return Rotator.RotateVector(FVector(1.f, 0.f, 0.f));
 }
