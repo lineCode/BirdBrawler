@@ -25,17 +25,19 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(HitboxData.Owner);
 
+	const FVector Location = HitboxData.SocketToFollow.ToString().IsEmpty() ? HitboxData.Location : HitboxData.SkeletalMesh->GetSocketLocation(HitboxData.SocketToFollow);
+
 	FHitResult OutHit;
-	const bool DidHit = UKismetSystemLibrary::SphereTraceSingleForObjects(HitboxData.World, HitboxData.Location, HitboxData.Location, HitboxData.HitboxDataAsset->Radius,
-	                                                                      TargetTraceTypes,
+	const bool DidHit = UKismetSystemLibrary::SphereTraceSingleForObjects(HitboxData.World, Location, Location,
+	                                                                      HitboxData.HitboxDataAsset->Radius, TargetTraceTypes,
 	                                                                      false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true);
 
-	DrawDebugSphere(HitboxData.World, HitboxData.Location, HitboxData.HitboxDataAsset->Radius, 7, FColor::Red, false);
+	DrawDebugSphere(HitboxData.World, Location, HitboxData.HitboxDataAsset->Radius, 7, FColor::Red, false);
 
 	const FRotator Rotator = FRotator(HitboxData.HitboxDataAsset->KnockbackOrientation, 90.f, 0.f);
 	const FVector KnockbackVector = Rotator.RotateVector(FVector(1.f, 0.f, 0.f));
 
-	const FVector EndPoint = HitboxData.Location + KnockbackVector * 50.f;
+	const FVector EndPoint = Location + KnockbackVector * 50.f;
 
 	if (DidHit && !HitboxData.HitPawnsIds.Contains(OutHit.Actor->GetUniqueID()))
 	{
@@ -63,8 +65,7 @@ void UMovesEffectorComponent::RemoveHitboxDataById(const uint32 Id)
 	}
 }
 
-void UMovesEffectorComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                            FActorComponentTickFunction* ThisTickFunction)
+void UMovesEffectorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -76,13 +77,23 @@ void UMovesEffectorComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, const UWorld* World, AActor* Owner, const FVector& Location, uint32 Id)
 {
-	ActiveHitboxes.Add(FHitboxData{
-		HitboxDataAsset,
-		World,
-		Owner,
-		Location,
-		Id
-	});
+	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, World, Owner, Location, Id);
+
+	if (!ActiveHitboxes.Contains(HitboxData))
+	{
+		ActiveHitboxes.Add(HitboxData);
+	}
+}
+
+void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, const UWorld* World, AActor* Owner, USkeletalMeshComponent* SkeletalMesh,
+                                           const FName& SocketToFollow, uint32 Id)
+{
+	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, World, Owner, SkeletalMesh, SocketToFollow, Id);
+
+	if (!ActiveHitboxes.Contains(HitboxData))
+	{
+		ActiveHitboxes.Add(HitboxData);
+	}
 }
 
 void UMovesEffectorComponent::DisableHitbox(const uint32 Id)

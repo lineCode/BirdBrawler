@@ -12,9 +12,9 @@ void UHitboxNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequ
 	{
 		if (const auto* Character = Cast<ABirdBrawlerCharacter>(MeshComp->GetOwner()))
 		{
-			const FVector& SocketLocation = MeshComp->GetSocketLocation(SocketName);
+			//const FVector& SocketLocation = MeshComp->GetSocketLocation(SocketName);
 
-			Character->GetMovesEffectorComponent()->EnableHitbox(HitboxDataAsset, MeshComp->GetWorld(), MeshComp->GetOwner(), SocketLocation, GetUniqueID());
+			Character->GetMovesEffectorComponent()->EnableHitbox(HitboxDataAsset, MeshComp->GetWorld(), MeshComp->GetOwner(), MeshComp, SocketName, GetUniqueID());
 		}
 	}
 
