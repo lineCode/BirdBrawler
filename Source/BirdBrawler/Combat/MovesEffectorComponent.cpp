@@ -1,7 +1,9 @@
 ﻿#include "MovesEffectorComponent.h"
 
+#include "CombatUtils.h"
 #include "DrawDebugHelpers.h"
 #include "IHittable.h"
+#include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 UMovesEffectorComponent::UMovesEffectorComponent()
@@ -37,9 +39,14 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 	{
 		HitboxData.HitPawnsIds.Emplace(OutHit.Actor->GetUniqueID());
 
+		// TODO: must work on non-characters too
+		if (auto* Character = Cast<ABirdBrawlerCharacter>(OutHit.Actor))
+		{
+			FCombatUtils::ApplyKnockbackTo(KnockbackVector, HitboxData.HitboxDataAsset->KnockbackForce, Character);
+		}
+
 		if (auto* Hittable = Cast<IHittable>(OutHit.Actor))
 		{
-			// TODO: passing owner by value is expensive
 			Hittable->OnHit(KnockbackVector, HitboxData.Owner);
 		}
 	}
