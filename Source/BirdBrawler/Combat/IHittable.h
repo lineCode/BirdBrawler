@@ -17,5 +17,5 @@ class BIRDBRAWLER_API IHittable
 	GENERATED_BODY()
 
 public:
-	virtual void OnHit(const FVector& Knockback, const AActor& Hitter);
+	virtual void OnHit(const FVector& Knockback, AActor* Hitter);
 };

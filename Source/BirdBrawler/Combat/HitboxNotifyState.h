@@ -17,6 +17,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AnimNotify", meta=(ExposeOnSpawn = true))
 	UHitboxDataAsset* HitboxDataAsset;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Priority{0};
+
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 

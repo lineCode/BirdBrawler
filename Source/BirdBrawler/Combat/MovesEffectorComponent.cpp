@@ -40,7 +40,7 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 		if (auto* Hittable = Cast<IHittable>(OutHit.Actor))
 		{
 			// TODO: passing owner by value is expensive
-			Hittable->OnHit(KnockbackVector, *HitboxData.Owner);
+			Hittable->OnHit(KnockbackVector, HitboxData.Owner);
 		}
 	}
 
