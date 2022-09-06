@@ -51,6 +51,11 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 		if (auto* HitCharacter = Cast<ABirdBrawlerCharacter>(OutHit.Actor))
 		{
 			FCombatUtils::ApplyKnockbackTo(KnockbackVector, HitboxData.HitboxDataAsset->KnockbackForce, HitCharacter);
+
+			if (HitboxData.ForceOpponentFacing)
+			{
+				FCombatUtils::FaceTargetCharacter(Character, HitCharacter);
+			}
 		}
 
 		if (auto* Hittable = Cast<IHittable>(OutHit.Actor))
@@ -84,9 +89,10 @@ void UMovesEffectorComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	}
 }
 
-void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, const UWorld* World, AActor* Owner, const FVector& Location, uint32 Id)
+void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, const UWorld* World, AActor* Owner, const FVector& Location,
+                                           uint32 Id)
 {
-	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, World, Owner, Location, Id);
+	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, ForceOpponentFacing, World, Owner, Location, Id);
 
 	if (!ActiveHitboxes.Contains(HitboxData))
 	{
@@ -94,10 +100,11 @@ void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAss
 	}
 }
 
-void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, const UWorld* World, AActor* Owner, USkeletalMeshComponent* SkeletalMesh,
+void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, const UWorld* World, AActor* Owner,
+                                           USkeletalMeshComponent* SkeletalMesh,
                                            const FName& SocketToFollow, uint32 Id)
 {
-	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, World, Owner, SkeletalMesh, SocketToFollow, Id);
+	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, ForceOpponentFacing, World, Owner, SkeletalMesh, SocketToFollow, Id);
 
 	if (!ActiveHitboxes.Contains(HitboxData))
 	{
@@ -122,6 +129,6 @@ FVector UMovesEffectorComponent::CalculateKnockbackVector(const UHitboxDataAsset
 	bool FacingRight = Character->IsFacingRight();
 	float FinalKnockbackOrientation = FacingRight ? HitboxDataAsset->KnockbackOrientation : -HitboxDataAsset->KnockbackOrientation;
 
-	FRotator Rotator = FRotator(.45f, 0.f, FinalKnockbackOrientation);
+	FRotator Rotator = FRotator(0, 0, FinalKnockbackOrientation);
 	return Rotator.RotateVector(Forward);
 }

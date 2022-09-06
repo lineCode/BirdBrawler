@@ -1,6 +1,5 @@
 ﻿#include "HitboxNotifyState.h"
 
-#include "DrawDebugHelpers.h"
 #include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
 #include "MovesEffectorComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -13,7 +12,8 @@ void UHitboxNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequ
 	{
 		if (const auto* Character = Cast<ABirdBrawlerCharacter>(MeshComp->GetOwner()))
 		{
-			Character->GetMovesEffectorComponent()->EnableHitbox(HitboxDataAsset, MeshComp->GetWorld(), MeshComp->GetOwner(), MeshComp, SocketName, GetUniqueID());
+			Character->GetMovesEffectorComponent()->EnableHitbox(HitboxDataAsset, ForceOpponentFacing, MeshComp->GetWorld(), MeshComp->GetOwner(), MeshComp, SocketName,
+			                                                     GetUniqueID());
 		}
 	}
 

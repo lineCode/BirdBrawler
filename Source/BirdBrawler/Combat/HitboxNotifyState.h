@@ -18,7 +18,10 @@ public:
 	UHitboxDataAsset* HitboxDataAsset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Priority{0};
+	int Priority = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool ForceOpponentFacing = true;
 
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;

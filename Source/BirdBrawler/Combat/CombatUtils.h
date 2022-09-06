@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
 
 class ABirdBrawlerCharacter;
 
@@ -11,4 +12,5 @@ public:
 	~FCombatUtils();
 
 	static void ApplyKnockbackTo(const FVector& Direction, float Force, ABirdBrawlerCharacter* TargetActor);
+	static void FaceTargetCharacter(ABirdBrawlerCharacter* Character, ABirdBrawlerCharacter* Target);
 };

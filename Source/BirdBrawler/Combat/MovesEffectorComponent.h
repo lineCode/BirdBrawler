@@ -20,8 +20,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	// TODO: this will not only hit ABirdBrawlerCharacter but also other entities (make hittable entity?)
-	void EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, const UWorld* World, AActor* Owner, const FVector& Location, uint32 Id);
-	void EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, const UWorld* World, AActor* Owner, USkeletalMeshComponent* SkeletalMesh, const FName& SocketToFollow,
+	void EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, const UWorld* World, AActor* Owner, const FVector& Location, uint32 Id);
+	void EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, const UWorld* World, AActor* Owner, USkeletalMeshComponent* SkeletalMesh,
+	                  const FName& SocketToFollow,
 	                  uint32 Id);
 	void DisableHitbox(uint32 Id);
 
