@@ -24,7 +24,7 @@ bool operator==(const FHitboxData& Lhs, const FHitboxData& RHS)
 		&& Lhs.SkeletalMesh == RHS.SkeletalMesh
 		&& Lhs.SocketToFollow == RHS.SocketToFollow
 		&& Lhs.Id == RHS.Id
-		&& Lhs.HitPawnsIds == RHS.HitPawnsIds;
+		&& Lhs.HitActorsIds == RHS.HitActorsIds;
 }
 
 bool operator!=(const FHitboxData& Lhs, const FHitboxData& RHS)

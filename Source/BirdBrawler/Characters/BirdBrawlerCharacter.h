@@ -48,6 +48,9 @@ protected:
 	FName CurrentMove{NO_MOVE};
 
 public:
+	bool Invincible = false;
+	bool InvincibleAllowDamage = false;
+
 	ABirdBrawlerCharacter();
 
 	virtual void BeginPlay() override;
@@ -95,6 +98,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsFacingRight() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetInvincible(bool InInvincible, bool InAllowDamage);
 
 	FMoveEnded MoveEndedDelegate;
 	FCurrentMoveChanged CurrentMoveChangedDelegate;

@@ -147,3 +147,9 @@ bool ABirdBrawlerCharacter::IsFacingRight() const
 {
 	return FMath::IsNearlyEqual(GetActorRotation().Yaw, -90.f, 2.f);
 }
+
+void ABirdBrawlerCharacter::SetInvincible(bool InInvincible, bool InAllowDamage)
+{
+	Invincible = InInvincible;
+	InvincibleAllowDamage = InAllowDamage;
+}

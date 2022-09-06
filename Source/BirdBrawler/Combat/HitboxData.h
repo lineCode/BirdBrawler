@@ -14,7 +14,7 @@ struct FHitboxData
 	uint32 Id;
 
 	// TODO: move this to MovesEffectorComponent
-	TArray<uint32> HitPawnsIds;
+	TArray<uint32> HitActorsIds;
 
 	FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, const UWorld* InWorld, AActor* InOwner, USkeletalMeshComponent* InSkeletalMesh, const FName& 
 	InSocketToFollow,

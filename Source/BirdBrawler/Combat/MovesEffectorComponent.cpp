@@ -43,24 +43,27 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 
 	const FVector EndPoint = Location + KnockbackVector * 50.f;
 
-	if (DidHit && !HitboxData.HitPawnsIds.Contains(OutHit.Actor->GetUniqueID()))
+	if (DidHit && !HitboxData.HitActorsIds.Contains(OutHit.Actor->GetUniqueID()))
 	{
-		HitboxData.HitPawnsIds.Emplace(OutHit.Actor->GetUniqueID());
-
-		// TODO: must work on non-characters too
+		// TODO: must work on non-characters too. refactor the following code pls
 		if (auto* HitCharacter = Cast<ABirdBrawlerCharacter>(OutHit.Actor))
 		{
-			FCombatUtils::ApplyKnockbackTo(KnockbackVector, HitboxData.HitboxDataAsset->KnockbackForce, HitCharacter);
-
-			if (HitboxData.ForceOpponentFacing)
+			if (!HitCharacter->Invincible)
 			{
-				FCombatUtils::FaceTargetCharacter(Character, HitCharacter);
-			}
-		}
+				HitboxData.HitActorsIds.Emplace(OutHit.Actor->GetUniqueID());
 
-		if (auto* Hittable = Cast<IHittable>(OutHit.Actor))
-		{
-			Hittable->OnHit(KnockbackVector, HitboxData.Owner);
+				if (auto* Hittable = Cast<IHittable>(HitCharacter))
+				{
+					Hittable->OnHit(KnockbackVector, HitboxData.Owner);
+				}
+
+				FCombatUtils::ApplyKnockbackTo(KnockbackVector, HitboxData.HitboxDataAsset->KnockbackForce, HitCharacter);
+
+				if (HitboxData.ForceOpponentFacing)
+				{
+					FCombatUtils::FaceTargetCharacter(Character, HitCharacter);
+				}
+			}
 		}
 	}
 
