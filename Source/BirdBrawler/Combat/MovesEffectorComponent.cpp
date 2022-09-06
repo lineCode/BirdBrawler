@@ -118,6 +118,10 @@ FHitboxData* UMovesEffectorComponent::GetHitboxData(const uint32 Id)
 FVector UMovesEffectorComponent::CalculateKnockbackVector(const UHitboxDataAsset* HitboxDataAsset) const
 {
 	FVector Forward = Character->GetActorForwardVector();
-	FRotator Rotator = FRotator(.45f, 0.f, HitboxDataAsset->KnockbackOrientation);
+
+	bool FacingRight = Character->IsFacingRight();
+	float FinalKnockbackOrientation = FacingRight ? HitboxDataAsset->KnockbackOrientation : -HitboxDataAsset->KnockbackOrientation;
+
+	FRotator Rotator = FRotator(.45f, 0.f, FinalKnockbackOrientation);
 	return Rotator.RotateVector(Forward);
 }
