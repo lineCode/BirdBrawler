@@ -11,6 +11,14 @@ UMovesEffectorComponent::UMovesEffectorComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
+void UMovesEffectorComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Character = Cast<ABirdBrawlerCharacter>(GetOwner());
+	verify(Character);
+}
+
 void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 {
 	TArray<TEnumAsByte<EObjectTypeQuery>> TargetTraceTypes;
@@ -31,7 +39,7 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 
 	DrawDebugSphere(HitboxData.World, Location, HitboxData.HitboxDataAsset->Radius, 7, FColor::Red, false);
 
-	const FVector KnockbackVector = GetKnockbackVector(HitboxData.HitboxDataAsset);
+	const FVector KnockbackVector = CalculateKnockbackVector(HitboxData.HitboxDataAsset);
 
 	const FVector EndPoint = Location + KnockbackVector * 50.f;
 
@@ -40,9 +48,9 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 		HitboxData.HitPawnsIds.Emplace(OutHit.Actor->GetUniqueID());
 
 		// TODO: must work on non-characters too
-		if (auto* Character = Cast<ABirdBrawlerCharacter>(OutHit.Actor))
+		if (auto* HitCharacter = Cast<ABirdBrawlerCharacter>(OutHit.Actor))
 		{
-			FCombatUtils::ApplyKnockbackTo(KnockbackVector, HitboxData.HitboxDataAsset->KnockbackForce, Character);
+			FCombatUtils::ApplyKnockbackTo(KnockbackVector, HitboxData.HitboxDataAsset->KnockbackForce, HitCharacter);
 		}
 
 		if (auto* Hittable = Cast<IHittable>(OutHit.Actor))
@@ -51,7 +59,7 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 		}
 	}
 
-	DrawDebugDirectionalArrow(HitboxData.World, Location, EndPoint, 10.f, FColor::Red, false);
+	DrawDebugDirectionalArrow(HitboxData.World, Location, EndPoint, 10.f, FColor::Red, false, 5);
 }
 
 void UMovesEffectorComponent::RemoveHitboxDataById(const uint32 Id)
@@ -107,8 +115,9 @@ FHitboxData* UMovesEffectorComponent::GetHitboxData(const uint32 Id)
 	return ActiveHitboxes.FindByPredicate([&](const FHitboxData& HitboxData) { return HitboxData.Id == Id; });
 }
 
-FVector UMovesEffectorComponent::GetKnockbackVector(const UHitboxDataAsset* HitboxDataAsset)
+FVector UMovesEffectorComponent::CalculateKnockbackVector(const UHitboxDataAsset* HitboxDataAsset) const
 {
-	const FRotator Rotator = FRotator(HitboxDataAsset->KnockbackOrientation, 90.f, 0.f);
-	return Rotator.RotateVector(FVector(1.f, 0.f, 0.f));
+	FVector Forward = Character->GetActorForwardVector();
+	FRotator Rotator = FRotator(.45f, 0.f, HitboxDataAsset->KnockbackOrientation);
+	return Rotator.RotateVector(Forward);
 }

@@ -93,6 +93,9 @@ public:
 
 	void EvaluateHitResult(const FHitResult& HitResult);
 
+	UFUNCTION(BlueprintCallable)
+	bool IsFacingRight() const;
+
 	FMoveEnded MoveEndedDelegate;
 	FCurrentMoveChanged CurrentMoveChangedDelegate;
 

@@ -16,6 +16,7 @@ class BIRDBRAWLER_API UMovesEffectorComponent : public UActorComponent
 public:
 	UMovesEffectorComponent();
 
+	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	// TODO: this will not only hit ABirdBrawlerCharacter but also other entities (make hittable entity?)
@@ -26,10 +27,13 @@ public:
 
 	FHitboxData* GetHitboxData(uint32 Id);
 
-	static FVector GetKnockbackVector(const UHitboxDataAsset* HitboxDataAsset);
+	FVector CalculateKnockbackVector(const UHitboxDataAsset* HitboxDataAsset) const;
 
 protected:
 	TArray<FHitboxData> ActiveHitboxes;
+
+	UPROPERTY()
+	ABirdBrawlerCharacter* Character{nullptr};
 
 	void ApplyHitboxData(FHitboxData& HitboxData) const;
 

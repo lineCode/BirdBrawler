@@ -57,14 +57,13 @@ void ABirdBrawlerCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	Airborne = GetCharacterMovement()->IsFalling();
-
-	BB_SLOGK(10, FString::Printf(TEXT("Movement direction: %f"), MovementDirection));
 }
 
 void ABirdBrawlerCharacter::OnHit(const FVector& Knockback, AActor* Hitter)
 {
 	IHittable::OnHit(Knockback, Hitter);
 
+	// TODO: temp
 	GoToFsmState("LightReaction");
 }
 
@@ -140,8 +139,11 @@ void ABirdBrawlerCharacter::PlayAnimation(UAnimationAsset* AnimationAsset, bool 
 	GetSkeletalMeshComponent()->PlayAnimation(AnimationAsset, Loop);
 }
 
-void ABirdBrawlerCharacter::EvaluateHitResult(const FHitResult& HitResult)
+void ABirdBrawlerCharacter::EvaluateHitResult(const FHitResult& /*HitResult*/)
 {
-	const AActor* HitActor = HitResult.GetActor();
-	BB_SLOG(HitActor->GetName());
+}
+
+bool ABirdBrawlerCharacter::IsFacingRight() const
+{
+	return FMath::IsNearlyEqual(GetActorRotation().Yaw, -90.f, 2.f);
 }
