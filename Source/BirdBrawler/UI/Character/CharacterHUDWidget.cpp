@@ -11,6 +11,7 @@ void UCharacterHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
+	// TODO: Do not call this every frame!!!
 	Refresh();
 }
 
@@ -21,6 +22,6 @@ void UCharacterHUDWidget::Refresh()
 		FNumberFormattingOptions Options;
 		Options.SetMaximumFractionalDigits(1);
 
-		DamagePercentText->SetText(FText::AsNumber(Owner->DamagePercent, &Options));
+		DamagePercentText->SetText(FText::FromString(FString::Printf(TEXT("%.1f%%"), Owner->DamagePercent)));
 	}
 }
