@@ -15,7 +15,6 @@ void UCharacterHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	// TODO: Do not call this every frame!!!
 	CheckDamageChange();
 }
 
