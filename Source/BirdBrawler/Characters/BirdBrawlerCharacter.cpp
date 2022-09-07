@@ -4,6 +4,7 @@
 #include "BirdBrawler/Animation/CharacterAnimInstance.h"
 #include "BirdBrawler/Combat/IHittable.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
@@ -40,8 +41,9 @@ void ABirdBrawlerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	InitFsm();
-
 	InitMaterialInstances();
+	InitHUD();
+
 	SetMaterials(InitialMaterialInstances);
 	SetInvincibilityMaterialsParameters();
 }
@@ -173,6 +175,18 @@ void ABirdBrawlerCharacter::InitMaterialInstances()
 	{
 		InitialMaterialInstances.Emplace(UMaterialInstanceDynamic::Create(Material, this));
 		EditableMaterialInstances.Emplace(UMaterialInstanceDynamic::Create(Material, this));
+	}
+}
+
+void ABirdBrawlerCharacter::InitHUD()
+{
+	CharacterHUDWidget = FindComponentByClass<UWidgetComponent>();
+	if (CharacterHUDWidget)
+	{
+		if (auto* HUDWidget = Cast<UCharacterHUDWidget>(CharacterHUDWidget->GetUserWidgetObject()))
+		{
+			HUDWidget->SetOwner(this);
+		}
 	}
 }
 

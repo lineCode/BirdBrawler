@@ -7,6 +7,7 @@
 #include "FSM.h"
 #include "BirdBrawler/Combat/IHittable.h"
 #include "BirdBrawler/Input/MovesBufferComponent.h"
+#include "BirdBrawler/UI/Character/CharacterHUDWidget.h"
 #include "BirdBrawlerCharacter.generated.h"
 
 class UInputBuffer;
@@ -95,7 +96,7 @@ public:
 	void SetInvincible(bool InInvincible, bool InAllowDamage);
 
 	float GetKnockbackMultiplier() const;
-	
+
 	FMoveEnded MoveEndedDelegate;
 	FCurrentMoveChanged CurrentMoveChangedDelegate;
 
@@ -116,6 +117,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FRuntimeFloatCurve KnockbackMultiplierCurve;
 
+	UPROPERTY()
+	class UWidgetComponent* CharacterHUDWidget = nullptr;
+
 	float MovementDirection = 0.f;
 	bool Airborne = false;
 	FName CurrentMove = NO_MOVE;
@@ -129,6 +133,8 @@ private:
 
 	void InitFsm();
 	void InitMaterialInstances();
+	void InitHUD();
+
 	void SetMaterials(TArray<UMaterialInstanceDynamic*>& Materials);
 	void SetInvincibilityMaterialsParameters();
 };
