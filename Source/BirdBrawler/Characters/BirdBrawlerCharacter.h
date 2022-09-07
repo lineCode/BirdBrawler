@@ -39,14 +39,6 @@ class ABirdBrawlerCharacter : public ACharacter, public IHittable
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class USkeletalMeshComponent* SkeletalMeshComponent;
 
-protected:
-	UPROPERTY(EditAnywhere, Category="FSM")
-	UFSM* Fsm;
-
-	float MovementDirection{0.f};
-	bool Airborne{false};
-	FName CurrentMove{NO_MOVE};
-
 public:
 	bool Invincible = false;
 	bool InvincibleAllowDamage = false;
@@ -94,8 +86,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PlayAnimation(UAnimationAsset* AnimationAsset, bool Loop = false) const;
 
-	void EvaluateHitResult(const FHitResult& HitResult);
-
 	UFUNCTION(BlueprintCallable)
 	bool IsFacingRight() const;
 
@@ -108,4 +98,30 @@ public:
 	FORCEINLINE UMovesBufferComponent* GetMovesBufferComponent() const { return MovesBufferComponent; }
 	FORCEINLINE UMovesEffectorComponent* GetMovesEffectorComponent() const { return MovesEffectorComponent; }
 	FORCEINLINE USkeletalMeshComponent* GetSkeletalMeshComponent() const { return SkeletalMeshComponent; }
+
+protected:
+	UPROPERTY(EditAnywhere, Category="FSM")
+	UFSM* Fsm;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float InvincibilityMaterialPulseFrequency = 4.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float InvincibilityMaterialPulseIntensity = 4.f;
+
+	float MovementDirection = 0.f;
+	bool Airborne = false;
+	FName CurrentMove = NO_MOVE;
+
+private:
+	UPROPERTY()
+	TArray<UMaterialInstanceDynamic*> InitialMaterialInstances;
+
+	UPROPERTY()
+	TArray<UMaterialInstanceDynamic*> EditableMaterialInstances;
+
+	void InitFsm();
+	void InitMaterialInstances();
+	void SetMaterials(TArray<UMaterialInstanceDynamic*>& Materials);
+	void SetInvincibilityMaterialsParameters();
 };

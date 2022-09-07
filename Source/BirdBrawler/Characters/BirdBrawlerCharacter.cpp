@@ -42,9 +42,11 @@ void ABirdBrawlerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	verify(Fsm);
-	Fsm->Start();
-	Fsm->PushState("Idle");
+	InitFsm();
+
+	InitMaterialInstances();
+	SetMaterials(InitialMaterialInstances);
+	SetInvincibilityMaterialsParameters();
 }
 
 void ABirdBrawlerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -139,10 +141,6 @@ void ABirdBrawlerCharacter::PlayAnimation(UAnimationAsset* AnimationAsset, bool 
 	GetSkeletalMeshComponent()->PlayAnimation(AnimationAsset, Loop);
 }
 
-void ABirdBrawlerCharacter::EvaluateHitResult(const FHitResult& /*HitResult*/)
-{
-}
-
 bool ABirdBrawlerCharacter::IsFacingRight() const
 {
 	return FMath::IsNearlyEqual(GetActorRotation().Yaw, -90.f, 2.f);
@@ -152,4 +150,45 @@ void ABirdBrawlerCharacter::SetInvincible(bool InInvincible, bool InAllowDamage)
 {
 	Invincible = InInvincible;
 	InvincibleAllowDamage = InAllowDamage;
+
+	SetMaterials(Invincible ? EditableMaterialInstances : InitialMaterialInstances);
+}
+
+void ABirdBrawlerCharacter::InitFsm()
+{
+	verify(Fsm);
+
+	Fsm->Start();
+	Fsm->PushState("Idle");
+}
+
+void ABirdBrawlerCharacter::InitMaterialInstances()
+{
+	verify(SkeletalMeshComponent);
+
+	TArray<UMaterialInterface*> Materials = SkeletalMeshComponent->GetMaterials();
+	for (UMaterialInterface* Material : Materials)
+	{
+		InitialMaterialInstances.Emplace(UMaterialInstanceDynamic::Create(Material, this));
+		EditableMaterialInstances.Emplace(UMaterialInstanceDynamic::Create(Material, this));
+	}
+}
+
+void ABirdBrawlerCharacter::SetMaterials(TArray<UMaterialInstanceDynamic*>& Materials)
+{
+	verify(SkeletalMeshComponent);
+
+	for (int32 i = 0; i < Materials.Num(); ++i)
+	{
+		SkeletalMeshComponent->SetMaterial(i, Materials[i]);
+	}
+}
+
+void ABirdBrawlerCharacter::SetInvincibilityMaterialsParameters()
+{
+	for (UMaterialInstanceDynamic* Material : EditableMaterialInstances)
+	{
+		Material->SetScalarParameterValue(FName(TEXT("Frequency")), InvincibilityMaterialPulseFrequency);
+		Material->SetScalarParameterValue(FName(TEXT("Intensity")), InvincibilityMaterialPulseIntensity);
+	}
 }
