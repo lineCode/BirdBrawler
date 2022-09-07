@@ -1,6 +1,7 @@
 ﻿#include "CharacterHUDWidget.h"
 #include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
 #include "Components/TextBlock.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UCharacterHUDWidget::SetOwner(ABirdBrawlerCharacter* InOwner)
 {
@@ -22,6 +23,11 @@ void UCharacterHUDWidget::Refresh()
 		FNumberFormattingOptions Options;
 		Options.SetMaximumFractionalDigits(1);
 
-		DamagePercentText->SetText(FText::FromString(FString::Printf(TEXT("%.1f%%"), Owner->DamagePercent)));
+		DamagePercentText->SetText(FText::FromString(FString::Printf(TEXT("%.1f"), Owner->DamagePercent)));
+
+		FLinearColor TextColor = UKismetMathLibrary::LinearColorLerp(NoDamagePercentTextColor, MaxDamagePercentTextColor,
+		                                                             FMath::GetMappedRangeValueClamped(FVector2D(0, 200), FVector2D(0, 1), Owner->DamagePercent));
+
+		DamagePercentText->SetColorAndOpacity(FSlateColor(TextColor));
 	}
 }

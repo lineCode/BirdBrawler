@@ -18,6 +18,12 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	class UTextBlock* DamagePercentText = nullptr;
 
+	UPROPERTY(EditAnywhere)
+	FLinearColor NoDamagePercentTextColor;
+
+	UPROPERTY(EditAnywhere)
+	FLinearColor MaxDamagePercentTextColor;
+
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:

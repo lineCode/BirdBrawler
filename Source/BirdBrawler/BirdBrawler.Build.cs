@@ -9,6 +9,6 @@ public class BirdBrawler : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange( new string[]
-			{"Core", "CoreUObject", "Engine", "InputCore", "StackBasedFSM", "UMG"} );
+			{"Core", "CoreUObject", "Engine", "InputCore", "StackBasedFSM", "UMG", "SlateCore"} );
 	}
 }
