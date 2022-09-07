@@ -24,11 +24,20 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FLinearColor MaxDamagePercentTextColor;
 
+	UPROPERTY(EditAnywhere)
+	float MaxDamagePercent = 100;
+
+	UPROPERTY(Transient, meta=(BindWidgetAnim))
+	UWidgetAnimation* ShakeAnimation;
+
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
 	UPROPERTY()
 	ABirdBrawlerCharacter* Owner = nullptr;
 
-	void Refresh();
+	float CurrentDamagePercent = 0;
+
+	void CheckDamageChange();
+	void OnDamageTaken();
 };
