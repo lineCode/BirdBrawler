@@ -5,7 +5,7 @@ void FCombatUtils::ApplyKnockbackTo(const FVector& Direction, float Force, ABird
 {
 	verify(TargetActor);
 
-	float MultipliedForce = Force * TargetActor->GetKnockbackMultiplier();
+	float MultipliedForce = Force * (IgnoreKnockbackMultiplier ? 1.f : TargetActor->GetKnockbackMultiplier());
 	TargetActor->LaunchCharacter(Direction.GetSafeNormal() * MultipliedForce, true, true);
 }
 
