@@ -43,6 +43,8 @@ public:
 	bool Invincible = false;
 	bool InvincibleAllowDamage = false;
 
+	float DamagePercent = 0.f;
+
 	ABirdBrawlerCharacter();
 
 	virtual void BeginPlay() override;
@@ -92,6 +94,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetInvincible(bool InInvincible, bool InAllowDamage);
 
+	float GetKnockbackMultiplier() const;
+	
 	FMoveEnded MoveEndedDelegate;
 	FCurrentMoveChanged CurrentMoveChangedDelegate;
 
@@ -108,6 +112,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float InvincibilityMaterialPulseIntensity = 4.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FRuntimeFloatCurve KnockbackMultiplierCurve;
 
 	float MovementDirection = 0.f;
 	bool Airborne = false;

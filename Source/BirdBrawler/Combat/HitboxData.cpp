@@ -1,17 +1,27 @@
 ﻿#include "HitboxData.h"
 
-FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, const UWorld* InWorld, AActor* InOwner,
-                         USkeletalMeshComponent* InSkeletalMesh,
-                         const FName& InSocketToFollow, uint32 InId): HitboxDataAsset(InHitboxDataAsset), ForceOpponentFacing(InForceOpponentFacing), World(InWorld),
-                                                                      Owner(InOwner),
-                                                                      SkeletalMesh
-                                                                      (InSkeletalMesh),
-                                                                      SocketToFollow(InSocketToFollow), Id(InId)
+FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, float InDamagePercent, const UWorld* InWorld, AActor* InOwner,
+                         USkeletalMeshComponent* InSkeletalMesh, const FName& InSocketToFollow, uint32 InId)
+	: HitboxDataAsset(InHitboxDataAsset),
+	  ForceOpponentFacing(InForceOpponentFacing),
+	  DamagePercent(InDamagePercent),
+	  World(InWorld),
+	  Owner(InOwner),
+	  SkeletalMesh(InSkeletalMesh),
+	  SocketToFollow(InSocketToFollow),
+	  Id(InId)
 {
 }
 
-FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, const UWorld* InWorld, AActor* InOwner, FVector InLocation, uint32 InId):
-	HitboxDataAsset(InHitboxDataAsset), ForceOpponentFacing(InForceOpponentFacing), World(InWorld), Owner(InOwner), Location(InLocation), Id(InId)
+FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, float InDamagePercent, const UWorld* InWorld, AActor* InOwner,
+                         FVector InLocation, uint32 InId)
+	: HitboxDataAsset(InHitboxDataAsset),
+	  ForceOpponentFacing(InForceOpponentFacing),
+	  DamagePercent(InDamagePercent),
+	  World(InWorld),
+	  Owner(InOwner),
+	  Location(InLocation),
+	  Id(InId)
 {
 }
 

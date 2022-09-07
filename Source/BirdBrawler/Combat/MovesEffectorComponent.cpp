@@ -48,9 +48,18 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 		// TODO: must work on non-characters too. refactor the following code pls
 		if (auto* HitCharacter = Cast<ABirdBrawlerCharacter>(OutHit.Actor))
 		{
-			if (!HitCharacter->Invincible)
+			if (HitCharacter->Invincible)
+			{
+				if (HitCharacter->InvincibleAllowDamage)
+				{
+					HitCharacter->DamagePercent += HitboxData.DamagePercent;
+				}
+			}
+			else
 			{
 				HitboxData.HitActorsIds.Emplace(OutHit.Actor->GetUniqueID());
+
+				HitCharacter->DamagePercent += HitboxData.DamagePercent;
 
 				if (auto* Hittable = Cast<IHittable>(HitCharacter))
 				{
@@ -92,10 +101,11 @@ void UMovesEffectorComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	}
 }
 
-void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, const UWorld* World, AActor* Owner, const FVector& Location,
+void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, float DamagePercent, const UWorld* World, AActor* Owner,
+                                           const FVector& Location,
                                            uint32 Id)
 {
-	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, ForceOpponentFacing, World, Owner, Location, Id);
+	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, ForceOpponentFacing, DamagePercent, World, Owner, Location, Id);
 
 	if (!ActiveHitboxes.Contains(HitboxData))
 	{
@@ -103,11 +113,11 @@ void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAss
 	}
 }
 
-void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, const UWorld* World, AActor* Owner,
+void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, float DamagePercent, const UWorld* World, AActor* Owner,
                                            USkeletalMeshComponent* SkeletalMesh,
                                            const FName& SocketToFollow, uint32 Id)
 {
-	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, ForceOpponentFacing, World, Owner, SkeletalMesh, SocketToFollow, Id);
+	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, ForceOpponentFacing, DamagePercent, World, Owner, SkeletalMesh, SocketToFollow, Id);
 
 	if (!ActiveHitboxes.Contains(HitboxData))
 	{

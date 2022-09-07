@@ -1,8 +1,5 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "BirdBrawlerCharacter.h"
 
-#include "BirdBrawler/Debug/Debug.h"
 #include "BirdBrawler/Combat/MovesEffectorComponent.h"
 #include "BirdBrawler/Animation/CharacterAnimInstance.h"
 #include "BirdBrawler/Combat/IHittable.h"
@@ -154,6 +151,11 @@ void ABirdBrawlerCharacter::SetInvincible(bool InInvincible, bool InAllowDamage)
 	SetMaterials(Invincible ? EditableMaterialInstances : InitialMaterialInstances);
 }
 
+float ABirdBrawlerCharacter::GetKnockbackMultiplier() const
+{
+	return KnockbackMultiplierCurve.GetRichCurveConst()->Eval(DamagePercent);
+}
+
 void ABirdBrawlerCharacter::InitFsm()
 {
 	verify(Fsm);
@@ -188,7 +190,7 @@ void ABirdBrawlerCharacter::SetInvincibilityMaterialsParameters()
 {
 	for (UMaterialInstanceDynamic* Material : EditableMaterialInstances)
 	{
-		Material->SetScalarParameterValue(FName(TEXT("Frequency")), InvincibilityMaterialPulseFrequency);
-		Material->SetScalarParameterValue(FName(TEXT("Intensity")), InvincibilityMaterialPulseIntensity);
+		Material->SetScalarParameterValue("Frequency", InvincibilityMaterialPulseFrequency);
+		Material->SetScalarParameterValue("Intensity", InvincibilityMaterialPulseIntensity);
 	}
 }
