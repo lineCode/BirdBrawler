@@ -1,7 +1,7 @@
 ﻿#include "CombatUtils.h"
 #include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
 
-void FCombatUtils::ApplyKnockbackTo(const FVector& Direction, float Force, ABirdBrawlerCharacter* TargetActor)
+void FCombatUtils::ApplyKnockbackTo(const FVector& Direction, float Force, ABirdBrawlerCharacter* TargetActor, bool IgnoreKnockbackMultiplier /*= false*/)
 {
 	verify(TargetActor);
 

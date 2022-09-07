@@ -8,6 +8,6 @@ class ABirdBrawlerCharacter;
 class BIRDBRAWLER_API FCombatUtils
 {
 public:
-	static void ApplyKnockbackTo(const FVector& Direction, float Force, ABirdBrawlerCharacter* TargetActor);
+	static void ApplyKnockbackTo(const FVector& Direction, float Force, ABirdBrawlerCharacter* TargetActor, bool IgnoreKnockbackMultiplier = false);
 	static void FaceTargetCharacter(ABirdBrawlerCharacter* Character, ABirdBrawlerCharacter* Target);
 };

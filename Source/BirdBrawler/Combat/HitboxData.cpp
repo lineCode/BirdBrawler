@@ -1,10 +1,11 @@
 ﻿#include "HitboxData.h"
 
-FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, float InDamagePercent, const UWorld* InWorld, AActor* InOwner,
-                         USkeletalMeshComponent* InSkeletalMesh, const FName& InSocketToFollow, uint32 InId)
+FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, float InDamagePercent, bool InIgnoreKnockbackMultiplier,
+                         const UWorld* InWorld, AActor* InOwner, USkeletalMeshComponent* InSkeletalMesh, const FName& InSocketToFollow, uint32 InId)
 	: HitboxDataAsset(InHitboxDataAsset),
 	  ForceOpponentFacing(InForceOpponentFacing),
 	  DamagePercent(InDamagePercent),
+	  IgnoreKnockbackMultiplier(InIgnoreKnockbackMultiplier),
 	  World(InWorld),
 	  Owner(InOwner),
 	  SkeletalMesh(InSkeletalMesh),
@@ -13,11 +14,12 @@ FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForce
 {
 }
 
-FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, float InDamagePercent, const UWorld* InWorld, AActor* InOwner,
-                         FVector InLocation, uint32 InId)
+FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, float InDamagePercent, bool InIgnoreKnockbackMultiplier,
+                         const UWorld* InWorld, AActor* InOwner, FVector InLocation, uint32 InId)
 	: HitboxDataAsset(InHitboxDataAsset),
 	  ForceOpponentFacing(InForceOpponentFacing),
 	  DamagePercent(InDamagePercent),
+	  IgnoreKnockbackMultiplier(InIgnoreKnockbackMultiplier),
 	  World(InWorld),
 	  Owner(InOwner),
 	  Location(InLocation),

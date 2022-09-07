@@ -12,7 +12,7 @@ void UHitboxNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequ
 	{
 		if (const auto* Character = Cast<ABirdBrawlerCharacter>(MeshComp->GetOwner()))
 		{
-			Character->GetMovesEffectorComponent()->EnableHitbox(HitboxDataAsset, ForceOpponentFacing, DamagePercent, MeshComp->GetWorld(), MeshComp->GetOwner(),
+			Character->GetMovesEffectorComponent()->EnableHitbox(HitboxDataAsset, ForceOpponentFacing, DamagePercent, IgnoreKnockbackMultiplier, MeshComp->GetWorld(), MeshComp->GetOwner(),
 			                                                     MeshComp,
 			                                                     SocketName,
 			                                                     GetUniqueID());

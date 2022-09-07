@@ -26,6 +26,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DamagePercent = 0.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IgnoreKnockbackMultiplier = false;
+
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 

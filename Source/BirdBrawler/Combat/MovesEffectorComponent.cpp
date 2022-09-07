@@ -66,7 +66,7 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 					Hittable->OnHit(KnockbackVector, HitboxData.Owner);
 				}
 
-				FCombatUtils::ApplyKnockbackTo(KnockbackVector, HitboxData.HitboxDataAsset->KnockbackForce, HitCharacter);
+				FCombatUtils::ApplyKnockbackTo(KnockbackVector, HitboxData.HitboxDataAsset->KnockbackForce, HitCharacter, HitboxData.IgnoreKnockbackMultiplier);
 
 				if (HitboxData.ForceOpponentFacing)
 				{
@@ -101,11 +101,14 @@ void UMovesEffectorComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	}
 }
 
-void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, float DamagePercent, const UWorld* World, AActor* Owner,
+void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, float DamagePercent, bool IgnoreKnockbackMultiplier,
+                                           const UWorld* World,
+                                           AActor*
+                                           Owner,
                                            const FVector& Location,
                                            uint32 Id)
 {
-	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, ForceOpponentFacing, DamagePercent, World, Owner, Location, Id);
+	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, ForceOpponentFacing, DamagePercent, IgnoreKnockbackMultiplier, World, Owner, Location, Id);
 
 	if (!ActiveHitboxes.Contains(HitboxData))
 	{
@@ -113,11 +116,15 @@ void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAss
 	}
 }
 
-void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, float DamagePercent, const UWorld* World, AActor* Owner,
+void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, float DamagePercent, bool IgnoreKnockbackMultiplier,
+                                           const UWorld* World,
+                                           AActor*
+                                           Owner,
                                            USkeletalMeshComponent* SkeletalMesh,
                                            const FName& SocketToFollow, uint32 Id)
 {
-	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, ForceOpponentFacing, DamagePercent, World, Owner, SkeletalMesh, SocketToFollow, Id);
+	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, ForceOpponentFacing, DamagePercent, IgnoreKnockbackMultiplier, World, Owner, SkeletalMesh, SocketToFollow,
+	                                           Id);
 
 	if (!ActiveHitboxes.Contains(HitboxData))
 	{
