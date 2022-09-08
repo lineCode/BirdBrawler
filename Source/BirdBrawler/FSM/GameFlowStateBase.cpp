@@ -1,7 +1,7 @@
 ﻿#include "GameFlowStateBase.h"
-
 #include "BirdBrawler/UI/UIUtils.h"
 #include "BirdBrawler/UI/UIViewsHandler.h"
+#include "Kismet/GameplayStatics.h"
 
 void UGameFlowStateBase::Init_Implementation()
 {
@@ -26,6 +26,11 @@ void UGameFlowStateBase::ShowView(FString InId)
 	verify(ViewsHandler);
 
 	ViewsHandler->ShowView(InId);
+}
+
+void UGameFlowStateBase::LoadLevel(FName InLevelName)
+{
+	UGameplayStatics::OpenLevel(this, InLevelName, true);
 }
 
 void UGameFlowStateBase::OnViewsHandlerReady_Implementation()

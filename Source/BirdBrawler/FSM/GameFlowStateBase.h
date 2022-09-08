@@ -24,6 +24,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ShowView(FString InId);
 
+	UFUNCTION(BlueprintCallable)
+	void LoadLevel(FName InLevelName);
+
 	UFUNCTION(BlueprintNativeEvent)
 	void OnViewsHandlerReady();
 
