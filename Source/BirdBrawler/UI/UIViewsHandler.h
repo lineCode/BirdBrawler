@@ -5,6 +5,8 @@
 #include "GameFramework/Actor.h"
 #include "UIViewsHandler.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FUIEvent, FName);
+
 UCLASS()
 class BIRDBRAWLER_API AUIViewsHandler : public AActor
 {
@@ -12,6 +14,8 @@ class BIRDBRAWLER_API AUIViewsHandler : public AActor
 
 public:
 	AUIViewsHandler();
+
+	void InvokeUIEvent(const FName& EventId);
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -29,6 +33,7 @@ protected:
 
 public:
 	bool Ready = false;
+	FUIEvent UIEventDelegate;
 
 	virtual void Tick(float DeltaTime) override;
 

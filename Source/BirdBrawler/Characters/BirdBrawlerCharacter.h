@@ -7,7 +7,6 @@
 #include "FSM.h"
 #include "BirdBrawler/Combat/IHittable.h"
 #include "BirdBrawler/Input/MovesBufferComponent.h"
-#include "BirdBrawler/UI/Character/CharacterHUDWidget.h"
 #include "BirdBrawlerCharacter.generated.h"
 
 class UInputBuffer;

@@ -5,13 +5,6 @@
 #include "BirdBrawler/UI/UIViewsHandler.h"
 #include "GameFlowStateBase.generated.h"
 
-UENUM(BlueprintType)
-enum UIViewsHandlerStateOutcome
-{
-	Ready,
-	NotReady,
-};
-
 UCLASS()
 class BIRDBRAWLER_API UGameFlowStateBase : public UStateBase
 {
@@ -20,6 +13,7 @@ class BIRDBRAWLER_API UGameFlowStateBase : public UStateBase
 public:
 	virtual void Init_Implementation() override;
 	virtual void Update_Implementation(float DeltaTime) override;
+	virtual void Enter_Implementation() override;
 
 	UFUNCTION(BlueprintCallable)
 	void ShowView(FString InId);
@@ -30,9 +24,14 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void OnViewsHandlerReady();
 
+	UFUNCTION(BlueprintNativeEvent)
+	void OnUIEvent(FName EventId);
+
 protected:
 	UPROPERTY()
 	AUIViewsHandler* ViewsHandler = nullptr;
 
 	bool ViewsHandlerReadyEventSent = false;
+
+	void OnUIEventDelegate(FName EventId);
 };

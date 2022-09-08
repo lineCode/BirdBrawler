@@ -3,6 +3,7 @@
 #include "BirdBrawler/Combat/MovesEffectorComponent.h"
 #include "BirdBrawler/Animation/CharacterAnimInstance.h"
 #include "BirdBrawler/Combat/IHittable.h"
+#include "BirdBrawler/UI/Character/CharacterHUDWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/SpringArmComponent.h"

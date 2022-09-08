@@ -21,6 +21,13 @@ void UGameFlowStateBase::Update_Implementation(float DeltaTime)
 	}
 }
 
+void UGameFlowStateBase::Enter_Implementation()
+{
+	Super::Enter_Implementation();
+
+	ViewsHandler->UIEventDelegate.AddUObject(this, &UGameFlowStateBase::OnUIEventDelegate);
+}
+
 void UGameFlowStateBase::ShowView(FString InId)
 {
 	verify(ViewsHandler);
@@ -31,6 +38,15 @@ void UGameFlowStateBase::ShowView(FString InId)
 void UGameFlowStateBase::LoadLevel(FName InLevelName)
 {
 	UGameplayStatics::OpenLevel(this, InLevelName, true);
+}
+
+void UGameFlowStateBase::OnUIEventDelegate(FName EventId)
+{
+	OnUIEvent(EventId);
+}
+
+void UGameFlowStateBase::OnUIEvent_Implementation(FName EventId)
+{
 }
 
 void UGameFlowStateBase::OnViewsHandlerReady_Implementation()

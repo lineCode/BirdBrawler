@@ -40,6 +40,11 @@ void AUIViewsHandler::InitViews()
 	Ready = true;
 }
 
+void AUIViewsHandler::InvokeUIEvent(const FName& EventId)
+{
+	UIEventDelegate.Broadcast(EventId);
+}
+
 void AUIViewsHandler::ShowView(const FString& Id)
 {
 	UViewBase* View = GetViewById(Id);

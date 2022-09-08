@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "BirdBrawler/FSM/GameFlowStateBase.h"
 #include "Blueprint/UserWidget.h"
 #include "ViewBase.generated.h"
 
@@ -20,4 +21,11 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void OnTick(float DeltaTime);
+
+	UFUNCTION(BlueprintCallable)
+	void InvokeUIEvent(FName EventId);
+
+protected:
+	UPROPERTY()
+	AUIViewsHandler* ViewsHandler = nullptr;
 };
