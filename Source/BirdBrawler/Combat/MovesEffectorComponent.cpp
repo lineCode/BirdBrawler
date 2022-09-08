@@ -54,6 +54,7 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 				{
 					HitCharacter->DamagePercent += HitboxData.DamagePercent;
 				}
+				
 			}
 			else
 			{

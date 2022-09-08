@@ -1,15 +1,12 @@
 ﻿#include "GameFlowStateBase.h"
 
-#include "BirdBrawler/UI/UISubsystem.h"
-#include "Kismet/GameplayStatics.h"
+#include "BirdBrawler/UI/UIUtils.h"
+#include "BirdBrawler/UI/UIViewsHandler.h"
 
-void UGameFlowStateBase::ShowView(const FString& Id)
+void UGameFlowStateBase::ShowView(FString InId)
 {
-	UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
-	verify(GameInstance);
+	AUIViewsHandler* ViewsHandler = UIUtils::GetViewsHandler(GetWorld());
+	verify(ViewsHandler);
 
-	UUISubsystem* UI = GameInstance->GetSubsystem<UUISubsystem>();
-	verify(UI);
-
-	UI->ShowView(Id);
+	ViewsHandler->ShowView(InId);
 }
