@@ -10,27 +10,61 @@ AUIViewsHandler::AUIViewsHandler()
 void AUIViewsHandler::BeginPlay()
 {
 	Super::BeginPlay();
+
+	InitViews();
 }
 
 void AUIViewsHandler::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (CurrentView)
+	{
+		CurrentView->OnTick(DeltaTime);
+	}
+}
+
+void AUIViewsHandler::InitViews()
+{
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	verify(PlayerController);
+
+	for (UViewDataAsset* ViewDataAsset : ViewsDataAssets)
+	{
+		UViewBase* View = CreateWidget<UViewBase>(PlayerController, ViewDataAsset->ViewWidget);
+		View->Id = ViewDataAsset->Id;
+
+		Views.Emplace(View);
+	}
+
+	Ready = true;
 }
 
 void AUIViewsHandler::ShowView(const FString& Id)
 {
-	UViewDataAsset* ViewDataAsset = GetViewClassById(Id);
-	verify(ViewDataAsset);
+	UViewBase* View = GetViewById(Id);
+	verify(View);
 
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-
-	UViewBase* View = CreateWidget<UViewBase>(PlayerController, ViewDataAsset->ViewWidget);
 	View->AddToViewport();
+
+	if (CurrentView)
+	{
+		CurrentView->OnHide();
+		CurrentView->RemoveFromViewport();
+	}
+
+	View->OnShow();
 
 	// TODO: Set input mode
 }
 
-UViewDataAsset* AUIViewsHandler::GetViewClassById(const FString& Id) const
+UViewBase* AUIViewsHandler::GetViewById(const FString& Id) const
 {
-	return *ViewsDataAssets.FindByPredicate([&](UViewDataAsset* DataAsset) { return DataAsset->Id == Id; });
+	auto* Element = Views.FindByPredicate([&](UViewBase* View) { return View->Id == Id; });
+	if (Element == nullptr)
+	{
+		return nullptr;
+	}
+
+	return *Element;
 }

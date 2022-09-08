@@ -1,4 +1,13 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿#include "ViewBase.h"
 
+void UViewBase::OnShow_Implementation()
+{
+}
 
-#include "ViewBase.h"
+void UViewBase::OnHide_Implementation()
+{
+}
+
+void UViewBase::OnTick_Implementation(float DeltaTime)
+{
+}
