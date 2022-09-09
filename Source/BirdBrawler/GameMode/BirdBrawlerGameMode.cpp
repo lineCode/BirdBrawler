@@ -1,5 +1,3 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #include "BirdBrawlerGameMode.h"
 #include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
 #include "UObject/ConstructorHelpers.h"

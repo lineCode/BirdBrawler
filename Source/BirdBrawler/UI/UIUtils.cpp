@@ -1,6 +1,7 @@
 ﻿#include "UIUtils.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Views/UIViewsHandler.h"
 
 AUIViewsHandler* UIUtils::GetViewsHandler(const UWorld* World)
 {

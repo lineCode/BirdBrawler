@@ -2,8 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "StateBase.h"
-#include "BirdBrawler/UI/UIViewsHandler.h"
 #include "GameFlowStateBase.generated.h"
+
+class AUIViewsHandler;
 
 UCLASS()
 class BIRDBRAWLER_API UGameFlowStateBase : public UStateBase
