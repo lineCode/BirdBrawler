@@ -27,7 +27,7 @@ private:
 	ABirdBrawlerCharacter* Character = nullptr;
 
 	FTimerHandle CountdownHandle;
-	int CountdownSecondsElapsed = 0;
+	int CountdownSecondsElapsed = 1;
 
 	void OnEachSecondPassed();
 };

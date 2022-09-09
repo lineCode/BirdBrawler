@@ -16,7 +16,7 @@ void ACombatGameMode::BeginPlay()
 
 	Character->DisableInput(PlayerController);
 
-	CountdownSecondsElapsed = 0;
+	CountdownSecondsElapsed = 1;
 	GetWorldTimerManager().SetTimer(CountdownHandle, this, &ACombatGameMode::OnEachSecondPassed, 1.0f, true, -1);
 }
 
