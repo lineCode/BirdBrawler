@@ -61,15 +61,11 @@ void UCharacterStateBase::PlayAnimation(UAnimationAsset* AnimationAsset, bool Lo
 
 void UCharacterStateBase::InvokeCharacterMoveEndedEvent(FName MoveName)
 {
-	// TODO: ugly af
-	if (FSMOwner->IsStateActive(Name))
-	{
-		const std::string MoveNameStr = TCHAR_TO_UTF8(*(MoveName.ToString()));
-		const std::string StateNameStr = TCHAR_TO_UTF8(*(Name.ToString()));
+	const std::string MoveNameStr = TCHAR_TO_UTF8(*(MoveName.ToString()));
+	const std::string StateNameStr = TCHAR_TO_UTF8(*(Name.ToString()));
 
-		BB_SLOG(FString::Printf(TEXT("[%hs] Move Ended: %hs"),StateNameStr.c_str(), MoveNameStr.c_str()));
-		OnCharacterMoveEnded(MoveName);
-	}
+	BB_SLOG(FString::Printf(TEXT("[%hs] Move Ended: %hs"),StateNameStr.c_str(), MoveNameStr.c_str()));
+	OnCharacterMoveEnded(MoveName);
 }
 
 void UCharacterStateBase::OnCharacterMoveEnded_Implementation(FName MoveName)
@@ -84,8 +80,19 @@ void UCharacterStateBase::Init_Implementation()
 	SkeletalMesh = Character->FindComponentByClass<USkeletalMeshComponent>();
 	verify(SkeletalMesh);
 
-	// TODO: this should be in Enter_Implementation, fix it
-	Character->MoveEndedDelegate.AddUObject(this, &UCharacterStateBase::InvokeCharacterMoveEndedEvent);
-
 	Super::Init_Implementation();
+}
+
+void UCharacterStateBase::Enter_Implementation()
+{
+	MoveEndedDelegateHandle = Character->MoveEndedDelegate.AddUObject(this, &UCharacterStateBase::InvokeCharacterMoveEndedEvent);
+
+	Super::Enter_Implementation();
+}
+
+void UCharacterStateBase::Exit_Implementation()
+{
+	Character->MoveEndedDelegate.Remove(MoveEndedDelegateHandle);
+
+	Super::Exit_Implementation();
 }

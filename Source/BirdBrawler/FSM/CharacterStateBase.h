@@ -42,7 +42,6 @@ public:
 
 protected:
 	bool StateActive{false};
-	FDelegateHandle MoveEndedHandle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ABirdBrawlerCharacter* Character{nullptr};
@@ -80,4 +79,9 @@ protected:
 	void InvokeCharacterMoveEndedEvent(FName MoveName);
 
 	virtual void Init_Implementation() override;
+	virtual void Enter_Implementation() override;
+	virtual void Exit_Implementation() override;
+
+private:
+	FDelegateHandle MoveEndedDelegateHandle;
 };
