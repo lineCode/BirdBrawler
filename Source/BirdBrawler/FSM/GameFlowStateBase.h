@@ -12,8 +12,9 @@ class BIRDBRAWLER_API UGameFlowStateBase : public UStateBase
 
 public:
 	virtual void Init_Implementation() override;
-	virtual void Update_Implementation(float DeltaTime) override;
 	virtual void Enter_Implementation() override;
+	virtual void Exit_Implementation() override;
+	virtual void Update_Implementation(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
 	void ShowView(FString InId);
@@ -34,4 +35,7 @@ protected:
 	bool ViewsHandlerReadyEventSent = false;
 
 	void OnUIEventDelegate(FName EventId);
+
+private:
+	FDelegateHandle UIEventDelegateHandle;
 };

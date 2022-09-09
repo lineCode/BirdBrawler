@@ -50,15 +50,16 @@ void AUIViewsHandler::ShowView(const FString& Id)
 	UViewBase* View = GetViewById(Id);
 	verify(View);
 
-	View->AddToViewport();
-
 	if (CurrentView)
 	{
 		CurrentView->OnHide();
-		CurrentView->RemoveFromViewport();
+		CurrentView->RemoveFromParent();
 	}
 
-	View->OnShow();
+	CurrentView = View;
+
+	CurrentView->AddToViewport();
+	CurrentView->OnShow();
 
 	// TODO: Set input mode
 }

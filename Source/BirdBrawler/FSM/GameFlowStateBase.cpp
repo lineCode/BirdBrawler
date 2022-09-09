@@ -25,7 +25,14 @@ void UGameFlowStateBase::Enter_Implementation()
 {
 	Super::Enter_Implementation();
 
-	ViewsHandler->UIEventDelegate.AddUObject(this, &UGameFlowStateBase::OnUIEventDelegate);
+	UIEventDelegateHandle = ViewsHandler->UIEventDelegate.AddUObject(this, &UGameFlowStateBase::OnUIEventDelegate);
+}
+
+void UGameFlowStateBase::Exit_Implementation()
+{
+	Super::Exit_Implementation();
+
+	ViewsHandler->UIEventDelegate.Remove(UIEventDelegateHandle);
 }
 
 void UGameFlowStateBase::ShowView(FString InId)
