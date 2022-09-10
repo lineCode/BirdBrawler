@@ -38,10 +38,12 @@ private:
 	FDelegateHandle InitialCountdownTickHandle;
 	FDelegateHandle InitialCountdownStartedHandle;
 	FDelegateHandle InitialCountdownEndedHandle;
+	FDelegateHandle MatchCountdownTickHandle;
 
 	void OnInitialCountdownTick(int RemainingSeconds);
 	void OnInitialCountdownStarted();
 	void OnInitialCountdownEnded();
+	void OnMatchCountdownTick(float RemainingSeconds);
 
 	UFUNCTION(BlueprintCallable)
 	void ShowWidget(UUserWidget* Widget);

@@ -9,6 +9,9 @@ class BIRDBRAWLER_API UHUDCountdown : public UWidgetBase
 {
 	GENERATED_BODY()
 
+public:
+	void DisplayRemainingSeconds(float Seconds);
+
 protected:
 	UPROPERTY(meta=(BindWidget))
 	class UTextBlock* TimerText = nullptr;

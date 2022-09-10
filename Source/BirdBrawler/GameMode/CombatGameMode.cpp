@@ -3,6 +3,11 @@
 #include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
+ACombatGameMode::ACombatGameMode()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
+
 void ACombatGameMode::BeginPlay()
 {
 	AGameModeBase::BeginPlay();
@@ -16,6 +21,10 @@ void ACombatGameMode::BeginPlay()
 	HUD = Cast<ACombatHUD>(PlayerController->GetHUD());
 	verify(HUD);
 
+	RemainingMatchSeconds = static_cast<float>(MatchDurationSeconds);
+	MatchTimedOutEventSent = false;
+	MatchRunning = false;
+
 	HUD->OnGameModeReady();
 
 	Character->DisableInput(PlayerController);
@@ -28,18 +37,35 @@ void ACombatGameMode::BeginPlay()
 void ACombatGameMode::Tick(float DeltaSeconds)
 {
 	AGameModeBase::Tick(DeltaSeconds);
+
+	if (MatchRunning)
+	{
+		if (!MatchTimedOutEventSent)
+		{
+			RemainingMatchSeconds -= DeltaSeconds;
+			MatchCountdownTick.Broadcast(RemainingMatchSeconds);
+
+			if (RemainingMatchSeconds <= 0.f)
+			{
+				MatchTimedOutEventSent = true;
+				MatchTimedOut.Broadcast();
+			}
+		}
+	}
 }
 
 void ACombatGameMode::OnEachSecondPassed()
 {
-	InitialCountdownTick.Broadcast(CountdownDuration - CountdownSecondsElapsed);
+	InitialCountdownTick.Broadcast(CountdownDurationSeconds - CountdownSecondsElapsed);
 
-	if (++CountdownSecondsElapsed > CountdownDuration)
+	if (++CountdownSecondsElapsed > CountdownDurationSeconds)
 	{
 		GetWorldTimerManager().ClearTimer(CountdownHandle);
 
 		Character->EnableInput(PlayerController);
 
 		InitialCountdownEnded.Broadcast();
+
+		MatchRunning = true;
 	}
 }

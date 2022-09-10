@@ -18,6 +18,7 @@ void ACombatHUD::OnGameModeReady()
 	InitialCountdownTickHandle = GameMode->InitialCountdownTick.AddUObject(this, &ACombatHUD::OnInitialCountdownTick);
 	InitialCountdownStartedHandle = GameMode->InitialCountdownStarted.AddUObject(this, &ACombatHUD::OnInitialCountdownStarted);
 	InitialCountdownEndedHandle = GameMode->InitialCountdownEnded.AddUObject(this, &ACombatHUD::OnInitialCountdownEnded);
+	MatchCountdownTickHandle = GameMode->MatchCountdownTick.AddUObject(this, &ACombatHUD::OnMatchCountdownTick);
 }
 
 void ACombatHUD::BeginPlay()
@@ -30,6 +31,7 @@ void ACombatHUD::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	GameMode->InitialCountdownTick.Remove(InitialCountdownTickHandle);
 	GameMode->InitialCountdownStarted.Remove(InitialCountdownStartedHandle);
 	GameMode->InitialCountdownEnded.Remove(InitialCountdownEndedHandle);
+	GameMode->MatchCountdownTick.Remove(MatchCountdownTickHandle);
 
 	Super::EndPlay(EndPlayReason);
 }
@@ -63,4 +65,11 @@ void ACombatHUD::OnInitialCountdownEnded()
 	UIUtils::HideWidget(InitialCountdownWidget);
 
 	UIUtils::ShowWidget(CountdownWidget);
+}
+
+void ACombatHUD::OnMatchCountdownTick(float RemainingSeconds)
+{
+	verify(CountdownWidget);
+
+	CountdownWidget->DisplayRemainingSeconds(RemainingSeconds);
 }
