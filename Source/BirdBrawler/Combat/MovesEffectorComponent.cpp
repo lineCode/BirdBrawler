@@ -24,6 +24,7 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 	TArray<TEnumAsByte<EObjectTypeQuery>> TargetTraceTypes;
 
 	// TODO: filter by "hittable character" not by pawn
+	// TODO: I think this queries the character's capsule. implement proper hurtboxes
 	const EObjectTypeQuery PawnCollisionType = UEngineTypes::ConvertToObjectType(ECC_Pawn);
 	TargetTraceTypes.Add(PawnCollisionType);
 
@@ -45,7 +46,8 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 
 	if (DidHit && !HitboxData.HitActorsIds.Contains(OutHit.Actor->GetUniqueID()))
 	{
-		// TODO: must work on non-characters too. refactor the following code pls
+		// TODO: must work on non-characters too.
+		// TODO: this logic works but it's redundant, a refactor is needed.
 		if (auto* HitCharacter = Cast<ABirdBrawlerCharacter>(OutHit.Actor))
 		{
 			if (HitCharacter->Invincible)
@@ -54,7 +56,6 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 				{
 					HitCharacter->DamagePercent += HitboxData.DamagePercent;
 				}
-				
 			}
 			else
 			{

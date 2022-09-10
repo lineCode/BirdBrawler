@@ -40,6 +40,7 @@ class ABirdBrawlerCharacter : public ACharacter, public IHittable
 	class USkeletalMeshComponent* SkeletalMeshComponent;
 
 public:
+	// TODO: a lot of this members could go to separate components
 	bool Invincible = false;
 	bool InvincibleAllowDamage = false;
 

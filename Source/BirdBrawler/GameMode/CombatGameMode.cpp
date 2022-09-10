@@ -18,6 +18,7 @@ void ACombatGameMode::BeginPlay()
 	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	verify(PlayerController);
 
+	// Having the game mode reference the HUD and the HUD reference the game mode is not good... I'll find a solution eventually
 	HUD = Cast<ACombatHUD>(PlayerController->GetHUD());
 	verify(HUD);
 

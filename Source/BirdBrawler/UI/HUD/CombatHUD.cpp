@@ -9,6 +9,7 @@
 
 void ACombatHUD::OnGameModeReady()
 {
+	// Having the game mode reference the HUD and the HUD reference the game mode is not good... I'll find a solution eventually
 	GameMode = Cast<ACombatGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	verify(GameMode);
 
