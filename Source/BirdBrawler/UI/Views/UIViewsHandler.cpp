@@ -1,5 +1,6 @@
 ﻿#include "UIViewsHandler.h"
 #include "ViewBase.h"
+#include "BirdBrawler/UI/UIUtils.h"
 #include "Kismet/GameplayStatics.h"
 
 AUIViewsHandler::AUIViewsHandler()
@@ -53,12 +54,12 @@ void AUIViewsHandler::ShowView(const FString& Id)
 	if (CurrentView)
 	{
 		CurrentView->OnHide();
-		CurrentView->RemoveFromParent();
+		UIUtils::HideWidget(CurrentView);
 	}
 
 	CurrentView = View;
 
-	CurrentView->AddToViewport();
+	UIUtils::ShowWidget(CurrentView);
 	CurrentView->OnShow();
 
 	// TODO: Set input mode

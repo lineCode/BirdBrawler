@@ -1,0 +1,66 @@
+﻿#include "CombatHUD.h"
+
+#include "HUDCountdown.h"
+#include "HUDInitialCountdown.h"
+#include "BirdBrawler/GameMode/CombatGameMode.h"
+#include "BirdBrawler/UI/UIUtils.h"
+#include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
+
+void ACombatHUD::OnGameModeReady()
+{
+	GameMode = Cast<ACombatGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	verify(GameMode);
+
+	CountdownWidget = CreateWidget<UHUDCountdown>(GetOwningPlayerController(), CountdownWidgetType, TEXT("Countdown"));
+	InitialCountdownWidget = CreateWidget<UHUDInitialCountdown>(GetOwningPlayerController(), InitialCountdownWidgetType, TEXT("InitialCountdown"));
+
+	InitialCountdownTickHandle = GameMode->InitialCountdownTick.AddUObject(this, &ACombatHUD::OnInitialCountdownTick);
+	InitialCountdownStartedHandle = GameMode->InitialCountdownStarted.AddUObject(this, &ACombatHUD::OnInitialCountdownStarted);
+	InitialCountdownEndedHandle = GameMode->InitialCountdownEnded.AddUObject(this, &ACombatHUD::OnInitialCountdownEnded);
+}
+
+void ACombatHUD::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void ACombatHUD::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	GameMode->InitialCountdownTick.Remove(InitialCountdownTickHandle);
+	GameMode->InitialCountdownStarted.Remove(InitialCountdownStartedHandle);
+	GameMode->InitialCountdownEnded.Remove(InitialCountdownEndedHandle);
+
+	Super::EndPlay(EndPlayReason);
+}
+
+void ACombatHUD::ShowWidget(UUserWidget* Widget)
+{
+	UIUtils::ShowWidget(Widget);
+}
+
+void ACombatHUD::HideWidget(UUserWidget* Widget)
+{
+	UIUtils::HideWidget(Widget);
+}
+
+void ACombatHUD::OnInitialCountdownTick(int RemainingSeconds)
+{
+	verify(InitialCountdownWidget);
+
+	InitialCountdownWidget->DisplayRemainingSeconds(RemainingSeconds);
+}
+
+void ACombatHUD::OnInitialCountdownStarted()
+{
+	verify(InitialCountdownWidget);
+	UIUtils::ShowWidget(InitialCountdownWidget);
+}
+
+void ACombatHUD::OnInitialCountdownEnded()
+{
+	verify(InitialCountdownWidget);
+	UIUtils::HideWidget(InitialCountdownWidget);
+
+	UIUtils::ShowWidget(CountdownWidget);
+}

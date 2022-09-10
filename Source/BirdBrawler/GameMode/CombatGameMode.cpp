@@ -1,7 +1,6 @@
 ﻿#include "CombatGameMode.h"
 
 #include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
-#include "BirdBrawler/Debug/Debug.h"
 #include "Kismet/GameplayStatics.h"
 
 void ACombatGameMode::BeginPlay()
@@ -14,10 +13,16 @@ void ACombatGameMode::BeginPlay()
 	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	verify(PlayerController);
 
+	HUD = Cast<ACombatHUD>(PlayerController->GetHUD());
+	verify(HUD);
+
+	HUD->OnGameModeReady();
+
 	Character->DisableInput(PlayerController);
 
 	CountdownSecondsElapsed = 1;
 	GetWorldTimerManager().SetTimer(CountdownHandle, this, &ACombatGameMode::OnEachSecondPassed, 1.0f, true, -1);
+	InitialCountdownStarted.Broadcast();
 }
 
 void ACombatGameMode::Tick(float DeltaSeconds)
@@ -27,11 +32,14 @@ void ACombatGameMode::Tick(float DeltaSeconds)
 
 void ACombatGameMode::OnEachSecondPassed()
 {
-	BB_SLOG(FString::Printf(TEXT("Countdown %d"), CountdownSecondsElapsed));
+	InitialCountdownTick.Broadcast(CountdownDuration - CountdownSecondsElapsed);
+
 	if (++CountdownSecondsElapsed > CountdownDuration)
 	{
 		GetWorldTimerManager().ClearTimer(CountdownHandle);
 
 		Character->EnableInput(PlayerController);
+
+		InitialCountdownEnded.Broadcast();
 	}
 }
