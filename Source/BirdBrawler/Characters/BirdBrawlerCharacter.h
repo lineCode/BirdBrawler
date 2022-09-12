@@ -11,6 +11,13 @@
 
 class UInputBuffer;
 
+UENUM()
+enum class EPushDirection : uint8
+{
+	Front,
+	Back
+};
+
 #define NO_MOVE FName{""}
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FMoveEnded, FName);
@@ -91,6 +98,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PlayAnimationSequence(UAnimSequenceBase* AnimationSequence, bool Loop = false) const;
+
+	UFUNCTION(BlueprintCallable)
+	void Push(EPushDirection Direction, float Intensity);
 
 	UFUNCTION(BlueprintCallable)
 	bool IsFacingRight() const;

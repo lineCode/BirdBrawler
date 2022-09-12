@@ -150,6 +150,15 @@ void ABirdBrawlerCharacter::PlayAnimationSequence(UAnimSequenceBase* AnimationSe
 	CharacterAnimInstance->AnimationRequested(AnimationSequence, Loop);
 }
 
+void ABirdBrawlerCharacter::Push(EPushDirection Direction, float Intensity)
+{
+	FVector FinalVector = Direction == EPushDirection::Front
+		                      ? (IsFacingRight() ? FVector::LeftVector : FVector::RightVector)
+		                      : (IsFacingRight() ? FVector::RightVector : FVector::LeftVector);
+
+	LaunchCharacter(FinalVector * Intensity, true, true);
+}
+
 bool ABirdBrawlerCharacter::IsFacingRight() const
 {
 	return FMath::IsNearlyEqual(GetActorRotation().Yaw, -90.f, 2.f);
