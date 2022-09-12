@@ -59,9 +59,9 @@ void UCharacterStateBase::PlayAnimation(UAnimationAsset* AnimationAsset, bool Lo
 	Character->PlayAnimation(AnimationAsset, Loop);
 }
 
-void UCharacterStateBase::PlayAnimationSequence(UAnimSequenceBase* AnimationSequence) const
+void UCharacterStateBase::PlayAnimationSequence(UAnimSequenceBase* AnimationSequence, bool Loop /*= false*/) const
 {
-	Character->PlayAnimationSequence(AnimationSequence);
+	Character->PlayAnimationSequence(AnimationSequence, Loop);
 }
 
 void UCharacterStateBase::InvokeCharacterMoveEndedEvent(FName MoveName)

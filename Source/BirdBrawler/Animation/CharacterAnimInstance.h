@@ -13,5 +13,5 @@ public:
 	void CurrentMoveChanged(FName CurrentMoveName);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void AnimationRequested(UAnimSequenceBase* AnimationSequence);
+	void AnimationRequested(UAnimSequenceBase* AnimationSequence, bool Loop);
 };

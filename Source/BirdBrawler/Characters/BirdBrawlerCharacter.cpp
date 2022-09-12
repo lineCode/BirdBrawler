@@ -141,13 +141,13 @@ void ABirdBrawlerCharacter::PlayAnimation(UAnimationAsset* AnimationAsset, bool 
 	GetSkeletalMeshComponent()->PlayAnimation(AnimationAsset, Loop);
 }
 
-void ABirdBrawlerCharacter::PlayAnimationSequence(UAnimSequenceBase* AnimationSequence) const
+void ABirdBrawlerCharacter::PlayAnimationSequence(UAnimSequenceBase* AnimationSequence, bool Loop /*= false*/) const
 {
 	UCharacterAnimInstance* CharacterAnimInstance = Cast<UCharacterAnimInstance>(GetSkeletalMeshComponent()->GetAnimInstance());
 
 	verify(CharacterAnimInstance);
 
-	CharacterAnimInstance->AnimationRequested(AnimationSequence);
+	CharacterAnimInstance->AnimationRequested(AnimationSequence, Loop);
 }
 
 bool ABirdBrawlerCharacter::IsFacingRight() const

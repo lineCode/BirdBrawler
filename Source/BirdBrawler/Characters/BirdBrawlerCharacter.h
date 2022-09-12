@@ -90,7 +90,7 @@ public:
 	void PlayAnimation(UAnimationAsset* AnimationAsset, bool Loop = false) const;
 
 	UFUNCTION(BlueprintCallable)
-	void PlayAnimationSequence(UAnimSequenceBase* AnimationSequence) const;
+	void PlayAnimationSequence(UAnimSequenceBase* AnimationSequence, bool Loop = false) const;
 
 	UFUNCTION(BlueprintCallable)
 	bool IsFacingRight() const;
