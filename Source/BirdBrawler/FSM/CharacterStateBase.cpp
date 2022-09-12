@@ -59,6 +59,11 @@ void UCharacterStateBase::PlayAnimation(UAnimationAsset* AnimationAsset, bool Lo
 	Character->PlayAnimation(AnimationAsset, Loop);
 }
 
+void UCharacterStateBase::PlayAnimationSequence(UAnimSequenceBase* AnimationSequence) const
+{
+	Character->PlayAnimationSequence(AnimationSequence);
+}
+
 void UCharacterStateBase::InvokeCharacterMoveEndedEvent(FName MoveName)
 {
 	const std::string MoveNameStr = TCHAR_TO_UTF8(*(MoveName.ToString()));

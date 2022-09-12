@@ -76,6 +76,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void PlayAnimation(UAnimationAsset* AnimationAsset, bool Loop = false) const;
 
+	UFUNCTION(BlueprintCallable)
+	void PlayAnimationSequence(UAnimSequenceBase* AnimationSequence) const;
+
 	void InvokeCharacterMoveEndedEvent(FName MoveName);
 
 	virtual void Init_Implementation() override;

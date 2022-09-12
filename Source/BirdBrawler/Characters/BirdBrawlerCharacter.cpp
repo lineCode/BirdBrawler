@@ -113,13 +113,12 @@ void ABirdBrawlerCharacter::SetCurrentMove(FName MoveName)
 
 	InvokeCurrentMoveChangedDelegate(MoveName);
 
-	// TODO: Re-enable this
-	/*UCharacterAnimInstance* CharacterAnimInstance = Cast<UCharacterAnimInstance>(
+	UCharacterAnimInstance* CharacterAnimInstance = Cast<UCharacterAnimInstance>(
 		GetSkeletalMeshComponent()->GetAnimInstance());
 
 	verify(CharacterAnimInstance);
 
-	CharacterAnimInstance->CurrentMoveChanged(MoveName);*/
+	CharacterAnimInstance->CurrentMoveChanged(MoveName);
 }
 
 float ABirdBrawlerCharacter::GetInputMovement() const
@@ -140,6 +139,15 @@ void ABirdBrawlerCharacter::InvokeCurrentMoveChangedDelegate(FName MoveName) con
 void ABirdBrawlerCharacter::PlayAnimation(UAnimationAsset* AnimationAsset, bool Loop /*= false*/) const
 {
 	GetSkeletalMeshComponent()->PlayAnimation(AnimationAsset, Loop);
+}
+
+void ABirdBrawlerCharacter::PlayAnimationSequence(UAnimSequenceBase* AnimationSequence) const
+{
+	UCharacterAnimInstance* CharacterAnimInstance = Cast<UCharacterAnimInstance>(GetSkeletalMeshComponent()->GetAnimInstance());
+
+	verify(CharacterAnimInstance);
+
+	CharacterAnimInstance->AnimationRequested(AnimationSequence);
 }
 
 bool ABirdBrawlerCharacter::IsFacingRight() const
