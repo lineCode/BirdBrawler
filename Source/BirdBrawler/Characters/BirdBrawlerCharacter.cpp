@@ -113,12 +113,13 @@ void ABirdBrawlerCharacter::SetCurrentMove(FName MoveName)
 
 	InvokeCurrentMoveChangedDelegate(MoveName);
 
-	UCharacterAnimInstance* CharacterAnimInstance = Cast<UCharacterAnimInstance>(
+	// TODO: Re-enable this
+	/*UCharacterAnimInstance* CharacterAnimInstance = Cast<UCharacterAnimInstance>(
 		GetSkeletalMeshComponent()->GetAnimInstance());
 
 	verify(CharacterAnimInstance);
 
-	CharacterAnimInstance->CurrentMoveChanged(MoveName);
+	CharacterAnimInstance->CurrentMoveChanged(MoveName);*/
 }
 
 float ABirdBrawlerCharacter::GetInputMovement() const
