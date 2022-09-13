@@ -56,6 +56,9 @@ protected:
 	void MoveCharacterHorizontal(const float Value);
 
 	UFUNCTION(BlueprintCallable)
+	void UpdateHorizontalMovement();
+	
+	UFUNCTION(BlueprintCallable)
 	TArray<FString> GetBufferedInputs() const;
 
 	UFUNCTION(BlueprintCallable)
@@ -78,6 +81,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void PlayAnimationSequence(UAnimSequenceBase* AnimationSequence, bool Loop = false) const;
+
+	UFUNCTION(BlueprintCallable)
+	void FaceMovement();
 
 	void InvokeCharacterMoveEndedEvent(FName MoveName);
 

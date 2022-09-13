@@ -38,7 +38,7 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 	                                                                      HitboxData.HitboxDataAsset->Radius, TargetTraceTypes,
 	                                                                      false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true);
 
-	DrawDebugSphere(HitboxData.World, Location, HitboxData.HitboxDataAsset->Radius, 7, FColor::Red, false);
+	//DrawDebugSphere(HitboxData.World, Location, HitboxData.HitboxDataAsset->Radius, 7, FColor::Red, false);
 
 	const FVector KnockbackVector = CalculateKnockbackVector(HitboxData.HitboxDataAsset);
 
@@ -78,7 +78,7 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 		}
 	}
 
-	DrawDebugDirectionalArrow(HitboxData.World, Location, EndPoint, 10.f, FColor::Red, false, 5);
+	//DrawDebugDirectionalArrow(HitboxData.World, Location, EndPoint, 10.f, FColor::Red, false, 5);
 }
 
 void UMovesEffectorComponent::RemoveHitboxDataById(const uint32 Id)

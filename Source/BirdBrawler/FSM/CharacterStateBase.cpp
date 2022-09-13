@@ -22,6 +22,11 @@ void UCharacterStateBase::MoveCharacterHorizontal(const float Value)
 	Character->MoveHorizontal(Value);
 }
 
+void UCharacterStateBase::UpdateHorizontalMovement()
+{
+	MoveCharacterHorizontal(Character->GetMovementDirection());
+}
+
 TArray<FString> UCharacterStateBase::GetBufferedInputs() const
 {
 	return Character->GetMovesBufferComponent()->GetBufferedInputs();
@@ -62,6 +67,11 @@ void UCharacterStateBase::PlayAnimation(UAnimationAsset* AnimationAsset, bool Lo
 void UCharacterStateBase::PlayAnimationSequence(UAnimSequenceBase* AnimationSequence, bool Loop /*= false*/) const
 {
 	Character->PlayAnimationSequence(AnimationSequence, Loop);
+}
+
+void UCharacterStateBase::FaceMovement()
+{
+	Character->SetActorRotation(FRotator(0.f, Character->GetMovementRotationYaw(), 0.f));
 }
 
 void UCharacterStateBase::InvokeCharacterMoveEndedEvent(FName MoveName)
