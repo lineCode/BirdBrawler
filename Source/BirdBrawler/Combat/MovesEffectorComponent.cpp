@@ -4,6 +4,7 @@
 #include "DrawDebugHelpers.h"
 #include "IHittable.h"
 #include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
+#include "BirdBrawler/Collision/CustomTraceChannels.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 UMovesEffectorComponent::UMovesEffectorComponent()
@@ -23,15 +24,14 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 {
 	TArray<TEnumAsByte<EObjectTypeQuery>> TargetTraceTypes;
 
-	// TODO: filter by "hittable character" not by pawn
-	// TODO: I think this queries the character's capsule. implement proper hurtboxes
-	const EObjectTypeQuery PawnCollisionType = UEngineTypes::ConvertToObjectType(ECC_Pawn);
-	TargetTraceTypes.Add(PawnCollisionType);
+	const EObjectTypeQuery TargetCollisionType = UEngineTypes::ConvertToObjectType(TraceChannel_Hurtbox);
+	TargetTraceTypes.Add(TargetCollisionType);
 
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(HitboxData.Owner);
 
 	const FVector Location = HitboxData.SocketToFollow.ToString().IsEmpty() ? HitboxData.Location : HitboxData.SkeletalMesh->GetSocketLocation(HitboxData.SocketToFollow);
+
 
 	FHitResult OutHit;
 	const bool DidHit = UKismetSystemLibrary::SphereTraceSingleForObjects(HitboxData.World, Location, Location,
