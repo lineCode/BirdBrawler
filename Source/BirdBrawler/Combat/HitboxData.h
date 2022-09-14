@@ -16,8 +16,7 @@ struct FHitboxData
 	FName SocketToFollow = "";
 	uint32 Id;
 
-	// TODO: move this to MovesEffectorComponent (a map, maybe?)
-	TArray<uint32> HitActorsIds;
+	TArray<uint32> HitCharactersIds;
 
 	FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, float InDamagePercent, bool InIgnoreKnockbackMultiplier, float InHitStunIntensity,
 	            const UWorld* InWorld, AActor* InOwner, USkeletalMeshComponent* InSkeletalMesh, const FName& InSocketToFollow, uint32 InId);

@@ -3,6 +3,7 @@
 #include "BirdBrawler/Combat/MovesEffectorComponent.h"
 #include "BirdBrawler/Animation/CharacterAnimInstance.h"
 #include "BirdBrawler/Combat/IHittable.h"
+#include "BirdBrawler/Debug/Debug.h"
 #include "BirdBrawler/UI/Widgets/Character/CharacterHUDWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
@@ -172,6 +173,24 @@ void ABirdBrawlerCharacter::SetInvincible(bool InInvincible, bool InAllowDamage)
 	SetMaterials(Invincible ? EditableMaterialInstances : InitialMaterialInstances);
 }
 
+void ABirdBrawlerCharacter::ApplyHitStun(float Intensity)
+{
+	if (Intensity <= 0.f)
+	{
+		return;
+	}
+
+	// TODO: stack custom time dilations to avoid any issues
+	CustomTimeDilation = 0.01f;
+
+	if (GetWorldTimerManager().IsTimerActive(HitStunTimerHandle))
+	{
+		GetWorldTimerManager().ClearTimer(HitStunTimerHandle);
+	}
+
+	GetWorldTimerManager().SetTimer(HitStunTimerHandle, this, &ABirdBrawlerCharacter::OnHitStunTimerEnded, .3f);
+}
+
 float ABirdBrawlerCharacter::GetKnockbackMultiplier() const
 {
 	return KnockbackMultiplierCurve.GetRichCurveConst()->Eval(DamagePercent);
@@ -226,4 +245,9 @@ void ABirdBrawlerCharacter::SetInvincibilityMaterialsParameters()
 		Material->SetScalarParameterValue("Frequency", InvincibilityMaterialPulseFrequency);
 		Material->SetScalarParameterValue("Intensity", InvincibilityMaterialPulseIntensity);
 	}
+}
+
+void ABirdBrawlerCharacter::OnHitStunTimerEnded()
+{
+	CustomTimeDilation = 1.f;
 }

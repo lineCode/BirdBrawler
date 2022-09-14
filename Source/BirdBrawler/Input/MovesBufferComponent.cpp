@@ -195,14 +195,14 @@ void UMovesBufferComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		}
 	}
 
-	for (int i = 0; i < Buffer.size(); ++i)
+	/*for (int i = 0; i < Buffer.size(); ++i)
 	{
 		FInputBufferEntry& Entry = Buffer.at(i);
 		const bool IsEmpty = Entry.Name == NoInput;
 		auto Message = IsEmpty ? "Empty" : Entry.Name;
 
 		BB_SLOGK(i, Message);
-	}
+	}*/
 
 	BufferChanged = false;
 

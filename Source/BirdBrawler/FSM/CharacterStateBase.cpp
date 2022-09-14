@@ -79,7 +79,7 @@ void UCharacterStateBase::InvokeCharacterMoveEndedEvent(FName MoveName)
 	const std::string MoveNameStr = TCHAR_TO_UTF8(*(MoveName.ToString()));
 	const std::string StateNameStr = TCHAR_TO_UTF8(*(Name.ToString()));
 
-	BB_SLOG(FString::Printf(TEXT("[%hs] Move Ended: %hs"),StateNameStr.c_str(), MoveNameStr.c_str()));
+	//BB_SLOG(FString::Printf(TEXT("[%hs] Move Ended: %hs"),StateNameStr.c_str(), MoveNameStr.c_str()));
 	OnCharacterMoveEnded(MoveName);
 }
 

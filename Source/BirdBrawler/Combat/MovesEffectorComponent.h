@@ -8,6 +8,8 @@
 
 class ABirdBrawlerCharacter;
 
+using HitboxActorPair = TPair<uint32, TArray<uint32>>;
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class BIRDBRAWLER_API UMovesEffectorComponent : public UActorComponent
 {
@@ -33,8 +35,13 @@ protected:
 	UPROPERTY()
 	ABirdBrawlerCharacter* Character{nullptr};
 
-	void ApplyHitboxData(FHitboxData& HitboxData) const;
+	void ActivateHitbox(FHitboxData& HitboxData);
+
+	bool CharacterWasHitPreviously(uint32 CharacterUniqueId, uint32 HitBoxId);
+	void RegisterHitCharacter(uint32 CharacterUniqueId, uint32 HitBoxId);
 
 private:
+	TArray<HitboxActorPair> HitboxHitActorPairs;
+
 	void RemoveHitboxDataById(uint32 Id);
 };

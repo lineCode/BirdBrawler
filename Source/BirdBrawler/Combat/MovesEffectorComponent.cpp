@@ -5,6 +5,7 @@
 #include "IHittable.h"
 #include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
 #include "BirdBrawler/Collision/CustomTraceChannels.h"
+#include "BirdBrawler/Debug/Debug.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 UMovesEffectorComponent::UMovesEffectorComponent()
@@ -20,7 +21,7 @@ void UMovesEffectorComponent::BeginPlay()
 	verify(Character);
 }
 
-void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
+void UMovesEffectorComponent::ActivateHitbox(FHitboxData& HitboxData)
 {
 	TArray<TEnumAsByte<EObjectTypeQuery>> TargetTraceTypes;
 
@@ -30,55 +31,81 @@ void UMovesEffectorComponent::ApplyHitboxData(FHitboxData& HitboxData) const
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(HitboxData.Owner);
 
-	const FVector Location = HitboxData.SocketToFollow.ToString().IsEmpty() ? HitboxData.Location : HitboxData.SkeletalMesh->GetSocketLocation(HitboxData.SocketToFollow);
+	const bool HasSocketToFollow = !HitboxData.SocketToFollow.ToString().IsEmpty();
+	const FVector Location = HasSocketToFollow ? HitboxData.SkeletalMesh->GetSocketLocation(HitboxData.SocketToFollow) : HitboxData.Location;
 
+	FHitResult OutHitResult;
+	const bool SuccessfulHit = UKismetSystemLibrary::SphereTraceSingleForObjects(HitboxData.World, Location, Location,
+	                                                                             HitboxData.HitboxDataAsset->Radius, TargetTraceTypes,
+	                                                                             false, ActorsToIgnore, EDrawDebugTrace::None, OutHitResult, true);
 
-	FHitResult OutHit;
-	const bool DidHit = UKismetSystemLibrary::SphereTraceSingleForObjects(HitboxData.World, Location, Location,
-	                                                                      HitboxData.HitboxDataAsset->Radius, TargetTraceTypes,
-	                                                                      false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true);
-
-	//DrawDebugSphere(HitboxData.World, Location, HitboxData.HitboxDataAsset->Radius, 7, FColor::Red, false);
-
-	const FVector KnockbackVector = CalculateKnockbackVector(HitboxData.HitboxDataAsset);
-
-	const FVector EndPoint = Location + KnockbackVector * 50.f;
-
-	if (DidHit && !HitboxData.HitActorsIds.Contains(OutHit.Actor->GetUniqueID()))
+	if (SuccessfulHit)
 	{
-		// TODO: must work on non-characters too.
-		// TODO: this logic works but it's redundant, a refactor is needed.
-		if (auto* HitCharacter = Cast<ABirdBrawlerCharacter>(OutHit.Actor))
+		if (!CharacterWasHitPreviously(OutHitResult.Actor->GetUniqueID(), HitboxData.Id))
 		{
-			if (HitCharacter->Invincible)
+			RegisterHitCharacter(OutHitResult.Actor->GetUniqueID(), HitboxData.Id);
+
+			// TODO: must work on non-characters too.
+			// TODO: this logic works but it's redundant, a refactor is needed.
+			if (auto* HitCharacter = Cast<ABirdBrawlerCharacter>(OutHitResult.Actor))
 			{
-				if (HitCharacter->InvincibleAllowDamage)
+				if (HitCharacter->Invincible)
+				{
+					if (HitCharacter->InvincibleAllowDamage)
+					{
+						HitCharacter->DamagePercent += HitboxData.DamagePercent;
+
+						FCombatUtils::ApplyHitStunTo(Character, HitboxData.HitStunIntensity);
+						FCombatUtils::ApplyHitStunTo(HitCharacter, HitboxData.HitStunIntensity);
+					}
+				}
+				else
 				{
 					HitCharacter->DamagePercent += HitboxData.DamagePercent;
-				}
-			}
-			else
-			{
-				HitboxData.HitActorsIds.Emplace(OutHit.Actor->GetUniqueID());
 
-				HitCharacter->DamagePercent += HitboxData.DamagePercent;
+					const FVector KnockbackVector = CalculateKnockbackVector(HitboxData.HitboxDataAsset);
+					if (auto* Hittable = Cast<IHittable>(HitCharacter))
+					{
+						Hittable->OnHit(KnockbackVector, HitboxData.Owner);
+					}
 
-				if (auto* Hittable = Cast<IHittable>(HitCharacter))
-				{
-					Hittable->OnHit(KnockbackVector, HitboxData.Owner);
-				}
+					FCombatUtils::ApplyKnockbackTo(KnockbackVector, HitboxData.HitboxDataAsset->KnockbackForce, HitCharacter, HitboxData.IgnoreKnockbackMultiplier);
 
-				FCombatUtils::ApplyKnockbackTo(KnockbackVector, HitboxData.HitboxDataAsset->KnockbackForce, HitCharacter, HitboxData.IgnoreKnockbackMultiplier);
+					if (HitboxData.ForceOpponentFacing)
+					{
+						FCombatUtils::FaceTargetCharacter(Character, HitCharacter);
+					}
 
-				if (HitboxData.ForceOpponentFacing)
-				{
-					FCombatUtils::FaceTargetCharacter(Character, HitCharacter);
+					FCombatUtils::ApplyHitStunTo(Character, HitboxData.HitStunIntensity);
+					FCombatUtils::ApplyHitStunTo(HitCharacter, HitboxData.HitStunIntensity);
 				}
 			}
 		}
 	}
+}
 
-	//DrawDebugDirectionalArrow(HitboxData.World, Location, EndPoint, 10.f, FColor::Red, false, 5);
+bool UMovesEffectorComponent::CharacterWasHitPreviously(uint32 CharacterUniqueId, uint32 HitBoxId)
+{
+	HitboxActorPair* CurrentPair = HitboxHitActorPairs.FindByPredicate([&](const HitboxActorPair& Pair) { return Pair.Key == HitBoxId; });
+	if (CurrentPair && CurrentPair->Value.Contains(CharacterUniqueId))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void UMovesEffectorComponent::RegisterHitCharacter(uint32 CharacterUniqueId, uint32 HitBoxId)
+{
+	HitboxActorPair* CurrentPair = HitboxHitActorPairs.FindByPredicate([&](const HitboxActorPair& Pair) { return Pair.Key == HitBoxId; });
+	if (CurrentPair)
+	{
+		CurrentPair->Value.Emplace(CharacterUniqueId);
+	}
+	else
+	{
+		HitboxHitActorPairs.Emplace(HitboxActorPair(HitBoxId, TArray<uint32>{CharacterUniqueId}));
+	}
 }
 
 void UMovesEffectorComponent::RemoveHitboxDataById(const uint32 Id)
@@ -91,6 +118,16 @@ void UMovesEffectorComponent::RemoveHitboxDataById(const uint32 Id)
 			break;
 		}
 	}
+
+	for (int i = HitboxHitActorPairs.Num() - 1; i >= 0; --i)
+	{
+		if (HitboxHitActorPairs[i].Key == Id)
+		{
+			// TODO: this avoids re-allocating memory. Could this become too big?
+			HitboxHitActorPairs[i].Value.Empty();
+			break;
+		}
+	}
 }
 
 void UMovesEffectorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -99,13 +136,13 @@ void UMovesEffectorComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 	for (FHitboxData& HitboxData : ActiveHitboxes)
 	{
-		ApplyHitboxData(HitboxData);
+		ActivateHitbox(HitboxData);
 	}
 }
 
 void UMovesEffectorComponent::EnableHitbox(FHitboxData&& HitboxData)
 {
-	if (!ActiveHitboxes.Contains(HitboxData))
+	if (!ActiveHitboxes.ContainsByPredicate([&](const FHitboxData& Data) { return HitboxData.Id == Data.Id; }))
 	{
 		ActiveHitboxes.Add(HitboxData);
 	}

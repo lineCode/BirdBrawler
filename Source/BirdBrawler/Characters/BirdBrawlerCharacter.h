@@ -108,6 +108,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetInvincible(bool InInvincible, bool InAllowDamage);
 
+	UFUNCTION(BlueprintCallable)
+	void ApplyHitStun(float Intensity);
+
 	float GetKnockbackMultiplier() const;
 
 	FMoveEnded MoveEndedDelegate;
@@ -144,10 +147,14 @@ private:
 	UPROPERTY()
 	TArray<UMaterialInstanceDynamic*> EditableMaterialInstances;
 
+	FTimerHandle HitStunTimerHandle;
+
 	void InitFsm();
 	void InitMaterialInstances();
 	void InitHUD();
 
 	void SetMaterials(TArray<UMaterialInstanceDynamic*>& Materials);
 	void SetInvincibilityMaterialsParameters();
+
+	void OnHitStunTimerEnded();
 };

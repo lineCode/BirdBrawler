@@ -18,3 +18,8 @@ void FCombatUtils::FaceTargetCharacter(ABirdBrawlerCharacter* Character, ABirdBr
 
 	Target->SetActorRotation(FRotator(0, TargetIsOnTheRightSide ? -90 : 90, 0));
 }
+
+void FCombatUtils::ApplyHitStunTo(ABirdBrawlerCharacter* TargetCharacter, float Intensity)
+{
+	TargetCharacter->ApplyHitStun(Intensity);
+}
