@@ -103,31 +103,8 @@ void UMovesEffectorComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	}
 }
 
-void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, float DamagePercent, bool IgnoreKnockbackMultiplier,
-                                           const UWorld* World,
-                                           AActor*
-                                           Owner,
-                                           const FVector& Location,
-                                           uint32 Id)
+void UMovesEffectorComponent::EnableHitbox(FHitboxData&& HitboxData)
 {
-	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, ForceOpponentFacing, DamagePercent, IgnoreKnockbackMultiplier, World, Owner, Location, Id);
-
-	if (!ActiveHitboxes.Contains(HitboxData))
-	{
-		ActiveHitboxes.Add(HitboxData);
-	}
-}
-
-void UMovesEffectorComponent::EnableHitbox(const UHitboxDataAsset* HitboxDataAsset, bool ForceOpponentFacing, float DamagePercent, bool IgnoreKnockbackMultiplier,
-                                           const UWorld* World,
-                                           AActor*
-                                           Owner,
-                                           USkeletalMeshComponent* SkeletalMesh,
-                                           const FName& SocketToFollow, uint32 Id)
-{
-	const FHitboxData HitboxData = FHitboxData(HitboxDataAsset, ForceOpponentFacing, DamagePercent, IgnoreKnockbackMultiplier, World, Owner, SkeletalMesh, SocketToFollow,
-	                                           Id);
-
 	if (!ActiveHitboxes.Contains(HitboxData))
 	{
 		ActiveHitboxes.Add(HitboxData);

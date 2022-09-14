@@ -1,11 +1,13 @@
 ﻿#include "HitboxData.h"
 
 FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, float InDamagePercent, bool InIgnoreKnockbackMultiplier,
-                         const UWorld* InWorld, AActor* InOwner, USkeletalMeshComponent* InSkeletalMesh, const FName& InSocketToFollow, uint32 InId)
+                         float InHitStunIntensity, const UWorld* InWorld, AActor* InOwner, USkeletalMeshComponent* InSkeletalMesh, const FName& InSocketToFollow,
+                         uint32 InId)
 	: HitboxDataAsset(InHitboxDataAsset),
 	  ForceOpponentFacing(InForceOpponentFacing),
 	  DamagePercent(InDamagePercent),
 	  IgnoreKnockbackMultiplier(InIgnoreKnockbackMultiplier),
+	  HitStunIntensity(InHitStunIntensity),
 	  World(InWorld),
 	  Owner(InOwner),
 	  SkeletalMesh(InSkeletalMesh),
@@ -15,11 +17,12 @@ FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForce
 }
 
 FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, float InDamagePercent, bool InIgnoreKnockbackMultiplier,
-                         const UWorld* InWorld, AActor* InOwner, FVector InLocation, uint32 InId)
+                         float InHitStunIntensity, const UWorld* InWorld, AActor* InOwner, FVector InLocation, uint32 InId)
 	: HitboxDataAsset(InHitboxDataAsset),
 	  ForceOpponentFacing(InForceOpponentFacing),
 	  DamagePercent(InDamagePercent),
 	  IgnoreKnockbackMultiplier(InIgnoreKnockbackMultiplier),
+	  HitStunIntensity(InHitStunIntensity),
 	  World(InWorld),
 	  Owner(InOwner),
 	  Location(InLocation),
@@ -30,6 +33,10 @@ FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForce
 bool operator==(const FHitboxData& Lhs, const FHitboxData& RHS)
 {
 	return Lhs.HitboxDataAsset == RHS.HitboxDataAsset
+		&& Lhs.ForceOpponentFacing == RHS.ForceOpponentFacing
+		&& Lhs.DamagePercent == RHS.DamagePercent
+		&& Lhs.IgnoreKnockbackMultiplier == RHS.IgnoreKnockbackMultiplier
+		&& Lhs.HitStunIntensity == RHS.HitStunIntensity
 		&& Lhs.World == RHS.World
 		&& Lhs.Owner == RHS.Owner
 		&& Lhs.Location == RHS.Location
