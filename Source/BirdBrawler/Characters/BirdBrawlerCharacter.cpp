@@ -2,6 +2,7 @@
 
 #include "BirdBrawler/Combat/MovesEffectorComponent.h"
 #include "BirdBrawler/Animation/CharacterAnimInstance.h"
+#include "BirdBrawler/Combat/CombatUtils.h"
 #include "BirdBrawler/Combat/IHittable.h"
 #include "BirdBrawler/UI/Widgets/Character/CharacterHUDWidget.h"
 #include "Components/CapsuleComponent.h"
@@ -45,6 +46,7 @@ void ABirdBrawlerCharacter::BeginPlay()
 	InitFsm();
 	InitMaterialInstances();
 	InitHUD();
+	InitTimeDilations();
 
 	SetMaterials(InitialMaterialInstances);
 	SetInvincibilityMaterialsParameters();
@@ -62,9 +64,9 @@ void ABirdBrawlerCharacter::Tick(float DeltaSeconds)
 	Airborne = GetCharacterMovement()->IsFalling();
 }
 
-void ABirdBrawlerCharacter::OnHit(const FVector& Knockback, AActor* Hitter)
+void ABirdBrawlerCharacter::OnHit(const FVector& Knockback, float PitchDegreesAbs, float KnockbackForce, AActor* Hitter)
 {
-	IHittable::OnHit(Knockback, Hitter);
+	IHittable::OnHit(Knockback, PitchDegreesAbs, KnockbackForce, Hitter);
 
 	// TODO: temp
 	GoToFsmState("LightReaction");
@@ -175,15 +177,18 @@ void ABirdBrawlerCharacter::SetInvincible(bool InInvincible, bool InAllowDamage)
 
 void ABirdBrawlerCharacter::EnableHitStun(bool Shake)
 {
-	// TODO: stack custom time dilations to avoid any issues
-	CustomTimeDilation = 0.01f;
+	TimeDilations.Push(MIN_HITSTUN_TIME_DILATION);
+
+	CustomTimeDilation = TimeDilations.Last();
 	ShakeMesh = Shake;
 }
 
 void ABirdBrawlerCharacter::DisableHitStun()
 {
-	// TODO: stack custom time dilations to avoid any issues
-	CustomTimeDilation = 1.f;
+	TimeDilations.Pop();
+	verify(TimeDilations.Num() > 0);
+
+	CustomTimeDilation = TimeDilations.Last();
 }
 
 float ABirdBrawlerCharacter::GetKnockbackMultiplier() const
@@ -221,6 +226,12 @@ void ABirdBrawlerCharacter::InitHUD()
 			HUDWidget->SetOwner(this);
 		}
 	}
+}
+
+void ABirdBrawlerCharacter::InitTimeDilations()
+{
+	TimeDilations.Empty();
+	TimeDilations.Push(CustomTimeDilation);
 }
 
 void ABirdBrawlerCharacter::SetMaterials(TArray<UMaterialInstanceDynamic*>& Materials)

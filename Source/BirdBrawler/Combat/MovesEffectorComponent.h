@@ -28,7 +28,7 @@ public:
 
 	FHitboxData* GetHitboxData(uint32 Id);
 
-	FVector CalculateKnockbackVector(const UHitboxDataAsset* HitboxDataAsset) const;
+	FVector CalculateKnockbackVector(const UHitboxDataAsset* HitboxDataAsset, float& OutPitchDegreesAbs) const;
 
 protected:
 	TArray<FHitboxData> ActiveHitboxes;

@@ -66,13 +66,16 @@ void UMovesEffectorComponent::ActivateHitbox(FHitboxData& HitboxData)
 				{
 					HitCharacter->DamagePercent += HitboxData.DamagePercent;
 
-					const FVector KnockbackVector = CalculateKnockbackVector(HitboxData.HitboxDataAsset);
+					float PitchDegreesAbs;
+					const FVector KnockbackVector = CalculateKnockbackVector(HitboxData.HitboxDataAsset, PitchDegreesAbs);
+
+					float MultipliedKnockback = FCombatUtils::ApplyKnockbackTo(KnockbackVector, HitboxData.HitboxDataAsset->KnockbackForce,
+					                                                           HitCharacter, HitboxData.IgnoreKnockbackMultiplier);
+
 					if (auto* Hittable = Cast<IHittable>(HitCharacter))
 					{
-						Hittable->OnHit(KnockbackVector, HitboxData.Owner);
+						Hittable->OnHit(KnockbackVector, PitchDegreesAbs, MultipliedKnockback, HitboxData.Owner);
 					}
-
-					FCombatUtils::ApplyKnockbackTo(KnockbackVector, HitboxData.HitboxDataAsset->KnockbackForce, HitCharacter, HitboxData.IgnoreKnockbackMultiplier);
 
 					if (HitboxData.ForceOpponentFacing)
 					{
@@ -161,11 +164,13 @@ FHitboxData* UMovesEffectorComponent::GetHitboxData(const uint32 Id)
 	return ActiveHitboxes.FindByPredicate([&](const FHitboxData& HitboxData) { return HitboxData.Id == Id; });
 }
 
-FVector UMovesEffectorComponent::CalculateKnockbackVector(const UHitboxDataAsset* HitboxDataAsset) const
+FVector UMovesEffectorComponent::CalculateKnockbackVector(const UHitboxDataAsset* HitboxDataAsset, float& OutPitchDegreesAbs) const
 {
 	FVector Forward = Character->GetActorForwardVector();
 
 	bool FacingRight = Character->IsFacingRight();
+	OutPitchDegreesAbs = HitboxDataAsset->KnockbackOrientation;
+
 	float FinalKnockbackOrientation = FacingRight ? HitboxDataAsset->KnockbackOrientation : -HitboxDataAsset->KnockbackOrientation;
 
 	FRotator Rotator = FRotator(0, 0, FinalKnockbackOrientation);

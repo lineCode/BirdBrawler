@@ -59,7 +59,7 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void Tick(float DeltaSeconds) override;
 
-	virtual void OnHit(const FVector& Knockback, AActor* Hitter) override;
+	virtual void OnHit(const FVector& Knockback, float PitchDegreesAbs, float KnockbackForce, AActor* Hitter) override;
 
 	void MoveHorizontal(float Val);
 
@@ -151,6 +151,8 @@ protected:
 	bool Airborne = false;
 	FName CurrentMove = NO_MOVE;
 
+	TArray<float> TimeDilations;
+
 private:
 	UPROPERTY()
 	TArray<UMaterialInstanceDynamic*> InitialMaterialInstances;
@@ -161,6 +163,7 @@ private:
 	void InitFsm();
 	void InitMaterialInstances();
 	void InitHUD();
+	void InitTimeDilations();
 
 	void SetMaterials(TArray<UMaterialInstanceDynamic*>& Materials);
 	void SetInvincibilityMaterialsParameters();

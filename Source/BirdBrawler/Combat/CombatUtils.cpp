@@ -11,12 +11,14 @@ AHitStunHandler* FCombatUtils::GetHitStunHandler(UWorld* World)
 	return ViewsHandler;
 }
 
-void FCombatUtils::ApplyKnockbackTo(const FVector& Direction, float Force, ABirdBrawlerCharacter* TargetActor, bool IgnoreKnockbackMultiplier /*= false*/)
+float FCombatUtils::ApplyKnockbackTo(const FVector& Direction, float Force, ABirdBrawlerCharacter* TargetActor, bool IgnoreKnockbackMultiplier /*= false*/)
 {
 	verify(TargetActor);
 
 	float MultipliedForce = Force * (IgnoreKnockbackMultiplier ? 1.f : TargetActor->GetKnockbackMultiplier());
 	TargetActor->LaunchCharacter(Direction.GetSafeNormal() * MultipliedForce, true, true);
+
+	return MultipliedForce;
 }
 
 void FCombatUtils::FaceTargetCharacter(ABirdBrawlerCharacter* Character, ABirdBrawlerCharacter* Target)
