@@ -109,7 +109,10 @@ public:
 	void SetInvincible(bool InInvincible, bool InAllowDamage);
 
 	UFUNCTION(BlueprintCallable)
-	void ApplyHitStun(float Intensity);
+	void EnableHitStun(bool Shake);
+
+	UFUNCTION(BlueprintCallable)
+	void DisableHitStun();
 
 	float GetKnockbackMultiplier() const;
 
@@ -133,8 +136,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FRuntimeFloatCurve KnockbackMultiplierCurve;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MeshShakeAmplitude = 2.5f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MeshShakeFrequency = 60.f;
+
 	UPROPERTY()
 	class UWidgetComponent* CharacterHUDWidget = nullptr;
+
+	bool ShakeMesh = false;
 
 	float MovementDirection = 0.f;
 	bool Airborne = false;
@@ -146,8 +157,6 @@ private:
 
 	UPROPERTY()
 	TArray<UMaterialInstanceDynamic*> EditableMaterialInstances;
-
-	FTimerHandle HitStunTimerHandle;
 
 	void InitFsm();
 	void InitMaterialInstances();

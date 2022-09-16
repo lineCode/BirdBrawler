@@ -19,6 +19,9 @@ void UMovesEffectorComponent::BeginPlay()
 
 	Character = Cast<ABirdBrawlerCharacter>(GetOwner());
 	verify(Character);
+
+	HitStunHandler = FCombatUtils::GetHitStunHandler(GetWorld());
+	verify(HitStunHandler);
 }
 
 void UMovesEffectorComponent::ActivateHitbox(FHitboxData& HitboxData)
@@ -55,8 +58,8 @@ void UMovesEffectorComponent::ActivateHitbox(FHitboxData& HitboxData)
 					{
 						HitCharacter->DamagePercent += HitboxData.DamagePercent;
 
-						FCombatUtils::ApplyHitStunTo(Character, HitboxData.HitStunIntensity);
-						FCombatUtils::ApplyHitStunTo(HitCharacter, HitboxData.HitStunIntensity);
+						HitStunHandler->ApplyHitStun(Character, HitboxData.HitStunDuration);
+						HitStunHandler->ApplyHitStun(HitCharacter, HitboxData.HitStunDuration, HitboxData.Shake);
 					}
 				}
 				else
@@ -76,8 +79,8 @@ void UMovesEffectorComponent::ActivateHitbox(FHitboxData& HitboxData)
 						FCombatUtils::FaceTargetCharacter(Character, HitCharacter);
 					}
 
-					FCombatUtils::ApplyHitStunTo(Character, HitboxData.HitStunIntensity);
-					FCombatUtils::ApplyHitStunTo(HitCharacter, HitboxData.HitStunIntensity);
+					HitStunHandler->ApplyHitStun(Character, HitboxData.HitStunDuration);
+					HitStunHandler->ApplyHitStun(HitCharacter, HitboxData.HitStunDuration, HitboxData.Shake);
 				}
 			}
 		}

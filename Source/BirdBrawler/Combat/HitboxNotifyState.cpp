@@ -2,7 +2,6 @@
 
 #include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
 #include "MovesEffectorComponent.h"
-#include "BirdBrawler/Debug/Debug.h"
 #include "Components/SkeletalMeshComponent.h"
 
 void UHitboxNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
@@ -18,7 +17,8 @@ void UHitboxNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequ
 				ForceOpponentFacing,
 				DamagePercent,
 				IgnoreKnockbackMultiplier,
-				HitStunIntensity,
+				HitStunDuration,
+				Shake,
 				MeshComp->GetWorld(),
 				MeshComp->GetOwner(),
 				MeshComp,
@@ -27,11 +27,6 @@ void UHitboxNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequ
 			);
 
 			Character->GetMovesEffectorComponent()->EnableHitbox(std::move(HitboxData));
-
-			if (HitStunIntensity > .0f)
-			{
-				BB_SLOG("Notify begin");
-			}
 		}
 	}
 
@@ -47,11 +42,6 @@ void UHitboxNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequen
 		if (const auto* Character = Cast<ABirdBrawlerCharacter>(MeshComp->GetOwner()))
 		{
 			Character->GetMovesEffectorComponent()->DisableHitbox(GetUniqueID());
-
-			if (HitStunIntensity > .0f)
-			{
-				BB_SLOG("Notify end");
-			}
 		}
 	}
 

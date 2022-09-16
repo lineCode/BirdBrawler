@@ -30,7 +30,10 @@ public:
 	bool IgnoreKnockbackMultiplier = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float HitStunIntensity = 0.f;
+	float HitStunDuration = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool Shake = false;
 
 	virtual void NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration) override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;

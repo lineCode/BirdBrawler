@@ -4,6 +4,7 @@
 #include "HitboxDataAsset.h"
 #include "Components/ActorComponent.h"
 #include "HitboxData.h"
+#include "HitStunHandler.h"
 #include "MovesEffectorComponent.generated.h"
 
 class ABirdBrawlerCharacter;
@@ -42,6 +43,9 @@ protected:
 
 private:
 	TArray<HitboxActorPair> HitboxHitActorPairs;
+
+	UPROPERTY()
+	AHitStunHandler* HitStunHandler = nullptr;
 
 	void RemoveHitboxDataById(uint32 Id);
 };

@@ -1,13 +1,15 @@
 ﻿#include "HitboxData.h"
 
 FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, float InDamagePercent, bool InIgnoreKnockbackMultiplier,
-                         float InHitStunIntensity, const UWorld* InWorld, AActor* InOwner, USkeletalMeshComponent* InSkeletalMesh, const FName& InSocketToFollow,
+                         float InHitStunDuration, bool InShake, const UWorld* InWorld, AActor* InOwner, USkeletalMeshComponent* InSkeletalMesh, const
+                         FName& InSocketToFollow,
                          uint32 InId)
 	: HitboxDataAsset(InHitboxDataAsset),
 	  ForceOpponentFacing(InForceOpponentFacing),
 	  DamagePercent(InDamagePercent),
 	  IgnoreKnockbackMultiplier(InIgnoreKnockbackMultiplier),
-	  HitStunIntensity(InHitStunIntensity),
+	  HitStunDuration(InHitStunDuration),
+	  Shake(InShake),
 	  World(InWorld),
 	  Owner(InOwner),
 	  SkeletalMesh(InSkeletalMesh),
@@ -17,12 +19,13 @@ FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForce
 }
 
 FHitboxData::FHitboxData(const UHitboxDataAsset* InHitboxDataAsset, bool InForceOpponentFacing, float InDamagePercent, bool InIgnoreKnockbackMultiplier,
-                         float InHitStunIntensity, const UWorld* InWorld, AActor* InOwner, FVector InLocation, uint32 InId)
+                         float InHitStunDuration, bool InShake, const UWorld* InWorld, AActor* InOwner, FVector InLocation, uint32 InId)
 	: HitboxDataAsset(InHitboxDataAsset),
 	  ForceOpponentFacing(InForceOpponentFacing),
 	  DamagePercent(InDamagePercent),
 	  IgnoreKnockbackMultiplier(InIgnoreKnockbackMultiplier),
-	  HitStunIntensity(InHitStunIntensity),
+	  HitStunDuration(InHitStunDuration),
+	  Shake(InShake),
 	  World(InWorld),
 	  Owner(InOwner),
 	  Location(InLocation),
@@ -36,7 +39,8 @@ bool operator==(const FHitboxData& Lhs, const FHitboxData& RHS)
 		&& Lhs.ForceOpponentFacing == RHS.ForceOpponentFacing
 		&& Lhs.DamagePercent == RHS.DamagePercent
 		&& Lhs.IgnoreKnockbackMultiplier == RHS.IgnoreKnockbackMultiplier
-		&& Lhs.HitStunIntensity == RHS.HitStunIntensity
+		&& Lhs.HitStunDuration == RHS.HitStunDuration
+		&& Lhs.Shake == RHS.Shake
 		&& Lhs.World == RHS.World
 		&& Lhs.Owner == RHS.Owner
 		&& Lhs.Location == RHS.Location

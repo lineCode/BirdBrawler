@@ -1,5 +1,15 @@
 ﻿#include "CombatUtils.h"
 #include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
+#include "Kismet/GameplayStatics.h"
+
+AHitStunHandler* FCombatUtils::GetHitStunHandler(UWorld* World)
+{
+	AActor* ViewsHandlerActor = UGameplayStatics::GetActorOfClass(World, AHitStunHandler::StaticClass());
+	verify(ViewsHandlerActor);
+
+	AHitStunHandler* ViewsHandler = Cast<AHitStunHandler>(ViewsHandlerActor);
+	return ViewsHandler;
+}
 
 void FCombatUtils::ApplyKnockbackTo(const FVector& Direction, float Force, ABirdBrawlerCharacter* TargetActor, bool IgnoreKnockbackMultiplier /*= false*/)
 {
@@ -19,7 +29,6 @@ void FCombatUtils::FaceTargetCharacter(ABirdBrawlerCharacter* Character, ABirdBr
 	Target->SetActorRotation(FRotator(0, TargetIsOnTheRightSide ? -90 : 90, 0));
 }
 
-void FCombatUtils::ApplyHitStunTo(ABirdBrawlerCharacter* TargetCharacter, float Intensity)
+void FCombatUtils::ApplyHitStunTo(ABirdBrawlerCharacter* TargetCharacter, float HitStunDuration, bool Shake)
 {
-	TargetCharacter->ApplyHitStun(Intensity);
 }
