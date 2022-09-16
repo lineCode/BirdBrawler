@@ -68,8 +68,15 @@ void ABirdBrawlerCharacter::OnHit(const FVector& Knockback, float PitchDegreesAb
 {
 	IHittable::OnHit(Knockback, PitchDegreesAbs, KnockbackForce, Hitter);
 
-	// TODO: temp
-	GoToFsmState("LightReaction");
+	// TODO: remove magic numbers, this is just for testing purposes
+	if (PitchDegreesAbs > 15.f && KnockbackForce > 500.f)
+	{
+		GoToFsmState("LaunchStart");
+	}
+	else
+	{
+		GoToFsmState("LightReaction");
+	}
 }
 
 void ABirdBrawlerCharacter::MoveHorizontal(float Value)
