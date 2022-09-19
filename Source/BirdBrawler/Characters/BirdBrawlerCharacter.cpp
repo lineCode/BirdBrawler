@@ -51,6 +51,7 @@ void ABirdBrawlerCharacter::BeginPlay()
 	InitHUD();
 	InitTimeDilations();
 	InitPushBox();
+	InitWallBox();
 
 	SetMaterials(InitialMaterialInstances);
 	SetInvincibilityMaterialsParameters();
@@ -209,6 +210,20 @@ float ABirdBrawlerCharacter::GetKnockbackMultiplier() const
 	return KnockbackMultiplierCurve.GetRichCurveConst()->Eval(DamagePercent);
 }
 
+bool ABirdBrawlerCharacter::IsAgainstWall() const
+{
+	if (WallBox != nullptr)
+	{
+		TArray<UPrimitiveComponent*> OverlappingComponents;
+		WallBox->GetOverlappingComponents(OverlappingComponents);
+
+		// TODO: add infos about wall position
+		return OverlappingComponents.Num() > 0;
+	}
+
+	return false;
+}
+
 void ABirdBrawlerCharacter::InitFsm()
 {
 	verify(Fsm);
@@ -259,8 +274,20 @@ void ABirdBrawlerCharacter::InitPushBox()
 		{
 			BB_SLOG_WARN(FString::Printf(TEXT("Character [%s] has no Pushbox available; will overlap with other characters"), *GetName()));
 		}
-		else
+	}
+}
+
+void ABirdBrawlerCharacter::InitWallBox()
+{
+	TArray<UActorComponent*> WallBoxes = GetComponentsByTag(UBoxComponent::StaticClass(), TAG_WALLBOX);
+	ensure(WallBoxes.Num() <= 1);
+
+	if (WallBoxes.Num() > 0)
+	{
+		WallBox = Cast<UBoxComponent>(WallBoxes[0]);
+		if (WallBox == nullptr)
 		{
+			BB_SLOG_WARN(FString::Printf(TEXT("Character [%s] has no Wallbox available; will overlap with other characters"), *GetName()));
 		}
 	}
 }
@@ -300,16 +327,19 @@ void ABirdBrawlerCharacter::UpdatePushboxOverlap(float DeltaTime)
 		// TODO: temp, let's start handling a single other enemy
 		if (OverlappingComponents.Num() == 1)
 		{
-			AActor* OtherActor = OverlappingComponents[0]->GetOwner();
-			bool OtherOnTheRight = OtherActor->GetActorLocation().Y > GetActorLocation().Y;
-			float ShiftingMultiplier = OtherOnTheRight ? -1.f : 1.f;
+			if (!IsAgainstWall())
+			{
+				AActor* OtherActor = OverlappingComponents[0]->GetOwner();
+				bool OtherOnTheRight = OtherActor->GetActorLocation().Y > GetActorLocation().Y;
+				float ShiftingMultiplier = OtherOnTheRight ? -1.f : 1.f;
 
-			const FVector CurrentLocation = GetActorLocation();
-			float CurrentPosition = CurrentLocation.Y;
-			const float NextPosition = CurrentPosition + (PushboxShiftRatePerFrame * ShiftingMultiplier * DeltaTime);
-			const FVector NextLocation = FVector(CurrentLocation.X, NextPosition, CurrentLocation.Z);
+				const FVector CurrentLocation = GetActorLocation();
+				float CurrentPosition = CurrentLocation.Y;
+				const float NextPosition = CurrentPosition + (PushboxShiftRatePerFrame * ShiftingMultiplier * DeltaTime);
+				const FVector NextLocation = FVector(CurrentLocation.X, NextPosition, CurrentLocation.Z);
 
-			SetActorLocation(NextLocation);
+				SetActorLocation(NextLocation);
+			}
 		}
 	}
 }

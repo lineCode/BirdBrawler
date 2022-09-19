@@ -117,6 +117,8 @@ public:
 
 	float GetKnockbackMultiplier() const;
 
+	bool IsAgainstWall() const;
+
 	FMoveEnded MoveEndedDelegate;
 	FCurrentMoveChanged CurrentMoveChangedDelegate;
 
@@ -167,11 +169,15 @@ private:
 	UPROPERTY()
 	UBoxComponent* PushBox = nullptr;
 
+	UPROPERTY()
+	UBoxComponent* WallBox = nullptr;
+
 	void InitFsm();
 	void InitMaterialInstances();
 	void InitHUD();
 	void InitTimeDilations();
 	void InitPushBox();
+	void InitWallBox();
 
 	void SetMaterials(TArray<UMaterialInstanceDynamic*>& Materials);
 	void SetInvincibilityMaterialsParameters();
