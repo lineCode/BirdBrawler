@@ -4,6 +4,8 @@
 #include "BirdBrawler/Animation/CharacterAnimInstance.h"
 #include "BirdBrawler/Combat/CombatUtils.h"
 #include "BirdBrawler/Combat/IHittable.h"
+#include "BirdBrawler/Common/Tags.h"
+#include "BirdBrawler/Debug/Debug.h"
 #include "BirdBrawler/UI/Widgets/Character/CharacterHUDWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
@@ -36,6 +38,7 @@ ABirdBrawlerCharacter::ABirdBrawlerCharacter()
 
 	MovesBufferComponent = CreateDefaultSubobject<UMovesBufferComponent>(TEXT("MovesBuffer"));
 	MovesEffectorComponent = CreateDefaultSubobject<UMovesEffectorComponent>(TEXT("MovesEffector"));
+
 	SkeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>();
 }
 
@@ -47,6 +50,7 @@ void ABirdBrawlerCharacter::BeginPlay()
 	InitMaterialInstances();
 	InitHUD();
 	InitTimeDilations();
+	InitPushBox();
 
 	SetMaterials(InitialMaterialInstances);
 	SetInvincibilityMaterialsParameters();
@@ -62,6 +66,8 @@ void ABirdBrawlerCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	Airborne = GetCharacterMovement()->IsFalling();
+
+	UpdatePushboxOverlap(DeltaSeconds);
 }
 
 void ABirdBrawlerCharacter::OnHit(const FVector& Knockback, float PitchDegreesAbs, float KnockbackForce, AActor* Hitter)
@@ -241,6 +247,24 @@ void ABirdBrawlerCharacter::InitTimeDilations()
 	TimeDilations.Push(CustomTimeDilation);
 }
 
+void ABirdBrawlerCharacter::InitPushBox()
+{
+	TArray<UActorComponent*> PushBoxes = GetComponentsByTag(UBoxComponent::StaticClass(), TAG_PUSHBOX);
+	ensure(PushBoxes.Num() <= 1);
+
+	if (PushBoxes.Num() > 0)
+	{
+		PushBox = Cast<UBoxComponent>(PushBoxes[0]);
+		if (PushBox == nullptr)
+		{
+			BB_SLOG_WARN(FString::Printf(TEXT("Character [%s] has no Pushbox available; will overlap with other characters"), *GetName()));
+		}
+		else
+		{
+		}
+	}
+}
+
 void ABirdBrawlerCharacter::SetMaterials(TArray<UMaterialInstanceDynamic*>& Materials)
 {
 	verify(SkeletalMeshComponent);
@@ -264,4 +288,28 @@ void ABirdBrawlerCharacter::OnHitStunTimerEnded()
 {
 	ShakeMesh = false;
 	CustomTimeDilation = 1.f;
+}
+
+void ABirdBrawlerCharacter::UpdatePushboxOverlap(float DeltaTime)
+{
+	if (PushBox != nullptr)
+	{
+		TArray<UPrimitiveComponent*> OverlappingComponents;
+		PushBox->GetOverlappingComponents(OverlappingComponents);
+
+		// TODO: temp, let's start handling a single other enemy
+		if (OverlappingComponents.Num() == 1)
+		{
+			AActor* OtherActor = OverlappingComponents[0]->GetOwner();
+			bool OtherOnTheRight = OtherActor->GetActorLocation().Y > GetActorLocation().Y;
+			float ShiftingMultiplier = OtherOnTheRight ? -1.f : 1.f;
+
+			const FVector CurrentLocation = GetActorLocation();
+			float CurrentPosition = CurrentLocation.Y;
+			const float NextPosition = CurrentPosition + (PushboxShiftRatePerFrame * ShiftingMultiplier * DeltaTime);
+			const FVector NextLocation = FVector(CurrentLocation.X, NextPosition, CurrentLocation.Z);
+
+			SetActorLocation(NextLocation);
+		}
+	}
 }

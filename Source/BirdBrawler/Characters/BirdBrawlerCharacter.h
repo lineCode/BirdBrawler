@@ -7,6 +7,7 @@
 #include "FSM.h"
 #include "BirdBrawler/Combat/IHittable.h"
 #include "BirdBrawler/Input/MovesBufferComponent.h"
+#include "Components/BoxComponent.h"
 #include "BirdBrawlerCharacter.generated.h"
 
 class UInputBuffer;
@@ -142,6 +143,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float MeshShakeFrequency = 60.f;
 
+	UPROPERTY(EditAnywhere)
+	float PushboxShiftRatePerFrame = 0.3f;
+
 	UPROPERTY()
 	class UWidgetComponent* CharacterHUDWidget = nullptr;
 
@@ -160,13 +164,19 @@ private:
 	UPROPERTY()
 	TArray<UMaterialInstanceDynamic*> EditableMaterialInstances;
 
+	UPROPERTY()
+	UBoxComponent* PushBox = nullptr;
+
 	void InitFsm();
 	void InitMaterialInstances();
 	void InitHUD();
 	void InitTimeDilations();
+	void InitPushBox();
 
 	void SetMaterials(TArray<UMaterialInstanceDynamic*>& Materials);
 	void SetInvincibilityMaterialsParameters();
 
 	void OnHitStunTimerEnded();
+
+	void UpdatePushboxOverlap(float DeltaTime);
 };
