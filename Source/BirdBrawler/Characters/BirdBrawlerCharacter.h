@@ -19,7 +19,19 @@ enum class EPushDirection : uint8
 	Back
 };
 
-#define NO_MOVE FName{""}
+USTRUCT()
+struct FWallCollisionInfo
+{
+	GENERATED_BODY()
+
+	bool DidCollide = false;
+
+	// TODO: Maybe add an array of walls in the wall collision info and not just a single wall?
+	UPROPERTY()
+	AActor* Wall = nullptr;
+};
+
+#define MOVE_NONE FName("")
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FMoveEnded, FName);
 DECLARE_MULTICAST_DELEGATE_OneParam(FCurrentMoveChanged, FName);
@@ -117,7 +129,7 @@ public:
 
 	float GetKnockbackMultiplier() const;
 
-	bool IsAgainstWall() const;
+	bool IsAgainstWall(FWallCollisionInfo& OutWallCollisionInfo) const;
 
 	FMoveEnded MoveEndedDelegate;
 	FCurrentMoveChanged CurrentMoveChangedDelegate;
@@ -155,7 +167,7 @@ protected:
 
 	float MovementDirection = 0.f;
 	bool Airborne = false;
-	FName CurrentMove = NO_MOVE;
+	FName CurrentMove = MOVE_NONE;
 
 	TArray<float> TimeDilations;
 

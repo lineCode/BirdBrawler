@@ -15,7 +15,7 @@ void UMoveEndedNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBas
 
 		if (ResetMoveAfterNotify)
 		{
-			Character->SetCurrentMove(NO_MOVE);
+			Character->SetCurrentMove(MOVE_NONE);
 		}
 
 		const std::string MoveNameStr = TCHAR_TO_UTF8(*(MoveName.ToString()));

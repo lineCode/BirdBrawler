@@ -210,15 +210,20 @@ float ABirdBrawlerCharacter::GetKnockbackMultiplier() const
 	return KnockbackMultiplierCurve.GetRichCurveConst()->Eval(DamagePercent);
 }
 
-bool ABirdBrawlerCharacter::IsAgainstWall() const
+bool ABirdBrawlerCharacter::IsAgainstWall(FWallCollisionInfo& OutWallCollisionInfo) const
 {
 	if (WallBox != nullptr)
 	{
 		TArray<UPrimitiveComponent*> OverlappingComponents;
 		WallBox->GetOverlappingComponents(OverlappingComponents);
 
-		// TODO: add infos about wall position
-		return OverlappingComponents.Num() > 0;
+		if (OverlappingComponents.Num() > 0)
+		{
+			OutWallCollisionInfo.DidCollide = true;
+			OutWallCollisionInfo.Wall = OverlappingComponents[0]->GetOwner();
+
+			return true;
+		}
 	}
 
 	return false;
@@ -324,18 +329,28 @@ void ABirdBrawlerCharacter::UpdatePushboxOverlap(float DeltaTime)
 		TArray<UPrimitiveComponent*> OverlappingComponents;
 		PushBox->GetOverlappingComponents(OverlappingComponents);
 
-		// TODO: temp, let's start handling a single other enemy
+		// TODO: temp, let's start by handling a single other enemy
 		if (OverlappingComponents.Num() == 1)
 		{
-			if (!IsAgainstWall())
+			FWallCollisionInfo WallCollisionInfo;
+			IsAgainstWall(WallCollisionInfo);
+
+			AActor* OtherActor = OverlappingComponents[0]->GetOwner();
+			bool OtherOnTheRight = OtherActor->GetActorLocation().Y > GetActorLocation().Y;
+
+			bool WallCollisionBlocksMovement = false;
+			if (WallCollisionInfo.DidCollide)
 			{
-				AActor* OtherActor = OverlappingComponents[0]->GetOwner();
-				bool OtherOnTheRight = OtherActor->GetActorLocation().Y > GetActorLocation().Y;
-				float ShiftingMultiplier = OtherOnTheRight ? -1.f : 1.f;
+				bool WallOnTheRight = WallCollisionInfo.Wall->GetActorLocation().Y > GetActorLocation().Y;
+				WallCollisionBlocksMovement = (OtherOnTheRight && !WallOnTheRight) || (!OtherOnTheRight && WallOnTheRight);
+			}
+
+			if (!WallCollisionBlocksMovement)
+			{
+				float MyShiftingMultiplier = OtherOnTheRight ? -1.f : 1.f;
 
 				const FVector CurrentLocation = GetActorLocation();
-				float CurrentPosition = CurrentLocation.Y;
-				const float NextPosition = CurrentPosition + (PushboxShiftRatePerFrame * ShiftingMultiplier * DeltaTime);
+				const float NextPosition = CurrentLocation.Y + (PushboxShiftRatePerFrame * MyShiftingMultiplier * DeltaTime);
 				const FVector NextLocation = FVector(CurrentLocation.X, NextPosition, CurrentLocation.Z);
 
 				SetActorLocation(NextLocation);
