@@ -205,6 +205,20 @@ void ABirdBrawlerCharacter::DisableHitStun()
 	CustomTimeDilation = TimeDilations.Last();
 }
 
+void ABirdBrawlerCharacter::ApplyAirFrictionIncrease(float ElapsedTimeSinceAirborne)
+{
+	auto* MovementComponent = GetMovementComponent();
+	if (MovementComponent && IsAirborne())
+	{
+		FVector TargetVelocity = MovementComponent->Velocity;
+		float VelocityMultiplier = LaunchAirFrictionIncreaseCurve.GetRichCurve()->Eval(ElapsedTimeSinceAirborne);
+
+		TargetVelocity.Y *= VelocityMultiplier;
+
+		MovementComponent->Velocity = TargetVelocity;
+	}
+}
+
 float ABirdBrawlerCharacter::GetKnockbackMultiplier() const
 {
 	return KnockbackMultiplierCurve.GetRichCurveConst()->Eval(DamagePercent);

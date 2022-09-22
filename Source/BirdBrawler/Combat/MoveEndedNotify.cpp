@@ -17,9 +17,6 @@ void UMoveEndedNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBas
 		{
 			Character->SetCurrentMove(MOVE_NONE);
 		}
-
-		const std::string MoveNameStr = TCHAR_TO_UTF8(*(MoveName.ToString()));
-		//BB_SLOG_WARN(FString::Printf(TEXT("Move Ended: %hs"), MoveNameStr.c_str()));
 	}
 	else
 	{

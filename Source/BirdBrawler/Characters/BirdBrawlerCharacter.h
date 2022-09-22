@@ -127,6 +127,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DisableHitStun();
 
+	UFUNCTION(BlueprintCallable)
+	void ApplyAirFrictionIncrease(float ElapsedTimeSinceAirborne);
+
 	float GetKnockbackMultiplier() const;
 
 	bool IsAgainstWall(FWallCollisionInfo& OutWallCollisionInfo) const;
@@ -150,6 +153,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FRuntimeFloatCurve KnockbackMultiplierCurve;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FRuntimeFloatCurve LaunchAirFrictionIncreaseCurve;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float MeshShakeAmplitude = 2.5f;

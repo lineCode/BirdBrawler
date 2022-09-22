@@ -74,6 +74,11 @@ void UCharacterStateBase::FaceMovement()
 	Character->SetActorRotation(FRotator(0.f, Character->GetMovementRotationYaw(), 0.f));
 }
 
+float UCharacterStateBase::GetElapsedTimeSinceStateEnter()
+{
+	return ElapsedTimeSinceEnter;
+}
+
 void UCharacterStateBase::InvokeCharacterMoveEndedEvent(FName MoveName)
 {
 	const std::string MoveNameStr = TCHAR_TO_UTF8(*(MoveName.ToString()));
@@ -101,6 +106,7 @@ void UCharacterStateBase::Init_Implementation()
 void UCharacterStateBase::Enter_Implementation()
 {
 	MoveEndedDelegateHandle = Character->MoveEndedDelegate.AddUObject(this, &UCharacterStateBase::InvokeCharacterMoveEndedEvent);
+	ElapsedTimeSinceEnter = 0.f;
 
 	Super::Enter_Implementation();
 }
@@ -110,4 +116,11 @@ void UCharacterStateBase::Exit_Implementation()
 	Character->MoveEndedDelegate.Remove(MoveEndedDelegateHandle);
 
 	Super::Exit_Implementation();
+}
+
+void UCharacterStateBase::Update_Implementation(float DeltaTime)
+{
+	Super::Update_Implementation(DeltaTime);
+
+	ElapsedTimeSinceEnter += DeltaTime;
 }

@@ -52,7 +52,7 @@ public:
 private:
 	TArray<FHitStunData> TargetsTimeTracker;
 
-	FHitStunData* GetTimeDataByTargetId(uint32 TargetId);
+	FHitStunData* GetHitStunData(uint32 TargetId);
 	void UpdateTargetShake(ABirdBrawlerCharacter* Target);
 	void StopTargetShake(const FHitStunData& HitStunData);
 };

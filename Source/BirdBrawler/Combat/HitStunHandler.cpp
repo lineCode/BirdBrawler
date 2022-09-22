@@ -57,18 +57,18 @@ void AHitStunHandler::ApplyHitStun(ABirdBrawlerCharacter* Target, float Duration
 	verify(Target);
 
 	uint32 TargetId = Target->GetUniqueID();
-	if (!GetTimeDataByTargetId(TargetId))
+	if (!GetHitStunData(TargetId))
 	{
 		TargetsTimeTracker.Emplace(FHitStunData(Target, Duration, Shake));
 	}
 
-	FHitStunData* Data = GetTimeDataByTargetId(TargetId);
+	FHitStunData* Data = GetHitStunData(TargetId);
 	verify(Data);
 
 	Target->EnableHitStun(Shake);
 }
 
-FHitStunData* AHitStunHandler::GetTimeDataByTargetId(uint32 TargetId)
+FHitStunData* AHitStunHandler::GetHitStunData(uint32 TargetId)
 {
 	return TargetsTimeTracker.FindByPredicate([&](const FHitStunData& CurrentData) { return CurrentData.TargetCharacter->GetUniqueID() == TargetId; });
 }
@@ -78,7 +78,7 @@ void AHitStunHandler::UpdateTargetShake(ABirdBrawlerCharacter* Target)
 	verify(Target);
 
 	float ElapsedTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
-	float DeltaY = FMath::Sin(ElapsedTime * (MeshShakeFrequency)) * (MeshShakeAmplitude);
+	float DeltaY = FMath::Sin(ElapsedTime * MeshShakeFrequency) * MeshShakeAmplitude;
 
 	auto* Mesh = Target->GetSkeletalMeshComponent();
 	verify(Mesh);

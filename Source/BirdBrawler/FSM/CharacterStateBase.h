@@ -41,7 +41,8 @@ public:
 	void OnCharacterMoveEnded(FName MoveName);
 
 protected:
-	bool StateActive{false};
+	bool StateActive = false;
+	float ElapsedTimeSinceEnter = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ABirdBrawlerCharacter* Character{nullptr};
@@ -57,7 +58,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateHorizontalMovement();
-	
+
 	UFUNCTION(BlueprintCallable)
 	TArray<FString> GetBufferedInputs() const;
 
@@ -85,11 +86,15 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void FaceMovement();
 
+	UFUNCTION(BlueprintPure)
+	float GetElapsedTimeSinceStateEnter();
+
 	void InvokeCharacterMoveEndedEvent(FName MoveName);
 
 	virtual void Init_Implementation() override;
 	virtual void Enter_Implementation() override;
 	virtual void Exit_Implementation() override;
+	virtual void Update_Implementation(float DeltaTime) override;
 
 private:
 	FDelegateHandle MoveEndedDelegateHandle;
