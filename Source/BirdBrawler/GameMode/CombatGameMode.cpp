@@ -2,6 +2,12 @@
 
 #include "BirdBrawler/Characters/BirdBrawlerCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/DefaultValueHelper.h"
+
+namespace
+{
+	constexpr auto MaxCharacters = 4;
+}
 
 ACombatGameMode::ACombatGameMode()
 {
@@ -12,8 +18,43 @@ void ACombatGameMode::BeginPlay()
 {
 	AGameModeBase::BeginPlay();
 
-	Character = Cast<ABirdBrawlerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	verify(Character);
+	// TODO: For testing purposes only [BEGIN]
+	CharactersTypesToSpawn.Emplace(DefaultPawnClass);
+	// TODO: For testing purposes only [END]
+
+	verify(CharactersTypesToSpawn.Num() <= MaxCharacters);
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
+
+	verify(PlayerStarts.Num() == MaxCharacters);
+
+	/*PlayerStarts.Sort([](const AActor& A, const AActor& B)
+	{
+		APlayerStart& AStart = Cast<APlayerStart>(A);
+		APlayerStart& BStart = Cast<APlayerStart>(B);
+
+		int APlayerIndex;
+		verify(FDefaultValueHelper::ParseInt(AStart->PlayerStartTag.ToString(), APlayerIndex));
+
+		int BPlayerIndex;
+		verify(FDefaultValueHelper::ParseInt(BStart->PlayerStartTag.ToString(), BPlayerIndex));
+
+		return APlayerIndex < BPlayerIndex;
+	});*/
+
+	// TODO: Assume characters to spawn are correctly ordered at this point
+	for (int i = 0; i < CharactersTypesToSpawn.Num(); ++i)
+	{
+		auto* SpawnedCharacter = GetWorld()->SpawnActor<ABirdBrawlerCharacter>(CharactersTypesToSpawn[i], PlayerStarts[i]->GetActorTransform());
+		SpawnedCharacters.Emplace(SpawnedCharacter);
+
+		auto* Player = UGameplayStatics::CreatePlayer(GetWorld());
+		Player->Possess(SpawnedCharacter);
+
+		Players.Emplace(Player);
+	}
+
+	EnablePlayersInput(false);
 
 	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	verify(PlayerController);
@@ -27,8 +68,6 @@ void ACombatGameMode::BeginPlay()
 	MatchRunning = false;
 
 	HUD->OnGameModeReady();
-
-	Character->DisableInput(PlayerController);
 
 	CountdownSecondsElapsed = 1;
 	GetWorldTimerManager().SetTimer(CountdownHandle, this, &ACombatGameMode::OnEachSecondPassed, 1.0f, true, -1);
@@ -63,10 +102,28 @@ void ACombatGameMode::OnEachSecondPassed()
 	{
 		GetWorldTimerManager().ClearTimer(CountdownHandle);
 
-		Character->EnableInput(PlayerController);
+		EnablePlayersInput(true);
 
 		InitialCountdownEnded.Broadcast();
 
 		MatchRunning = true;
+	}
+}
+
+void ACombatGameMode::EnablePlayersInput(bool Enable)
+{
+	verify(Players.Num() == SpawnedCharacters.Num());
+	int Count = SpawnedCharacters.Num();
+
+	for (int i = 0; i < Count; ++i)
+	{
+		if (Enable)
+		{
+			SpawnedCharacters[i]->EnableInput(Players[i]);
+		}
+		else
+		{
+			SpawnedCharacters[i]->DisableInput(Players[i]);
+		}
 	}
 }

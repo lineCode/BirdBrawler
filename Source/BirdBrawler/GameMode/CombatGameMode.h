@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "BirdBrawlerGameMode.h"
 #include "BirdBrawler/UI/HUD/CombatHUD.h"
+#include "GameFramework/PlayerStart.h"
 #include "CombatGameMode.generated.h"
 
 class ABirdBrawlerCharacter;
@@ -20,7 +21,7 @@ class BIRDBRAWLER_API ACombatGameMode : public AGameModeBase
 
 public:
 	ACombatGameMode();
-	
+
 	FInitialCountdownTick InitialCountdownTick;
 	FInitialCountdownStarted InitialCountdownStarted;
 	FInitialCountdownEnded InitialCountdownEnded;
@@ -47,6 +48,18 @@ private:
 	UPROPERTY()
 	ACombatHUD* HUD = nullptr;
 
+	UPROPERTY()
+	TArray<AActor*> PlayerStarts;
+
+	UPROPERTY()
+	TArray<APlayerController*> Players;
+
+	UPROPERTY()
+	TArray<TSubclassOf<ABirdBrawlerCharacter>> CharactersTypesToSpawn;
+
+	UPROPERTY()
+	TArray<ABirdBrawlerCharacter*> SpawnedCharacters;
+
 	FTimerHandle CountdownHandle;
 	int CountdownSecondsElapsed = 1;
 
@@ -56,4 +69,5 @@ private:
 	bool MatchRunning = false;
 
 	void OnEachSecondPassed();
+	void EnablePlayersInput(bool Enable);
 };
