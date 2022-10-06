@@ -6,7 +6,7 @@
 
 class ABirdBrawlerCharacter;
 
-#define MIN_HITSTUN_TIME_DILATION 0.005f
+#define MIN_HITSTUN_TIME_DILATION 0.0005f
 
 class BIRDBRAWLER_API FCombatUtils
 {

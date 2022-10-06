@@ -134,6 +134,11 @@ public:
 
 	bool IsAgainstWall(FWallCollisionInfo& OutWallCollisionInfo) const;
 
+	UFUNCTION(BlueprintNativeEvent)
+	void OnWallCollision(FVector CollisionNormal);
+
+	void EnableAirMovement(bool Enable);
+
 	FMoveEnded MoveEndedDelegate;
 	FCurrentMoveChanged CurrentMoveChangedDelegate;
 
@@ -190,6 +195,11 @@ private:
 	UPROPERTY()
 	UBoxComponent* WallBox = nullptr;
 
+	UPROPERTY()
+	TArray<UPrimitiveComponent*> CollidingWalls;
+
+	float CachedAirControl = 0.f;
+
 	void InitFsm();
 	void InitMaterialInstances();
 	void InitHUD();
@@ -203,4 +213,5 @@ private:
 	void OnHitStunTimerEnded();
 
 	void UpdatePushboxOverlap(float DeltaTime);
+	void UpdateWallsOverlap();
 };

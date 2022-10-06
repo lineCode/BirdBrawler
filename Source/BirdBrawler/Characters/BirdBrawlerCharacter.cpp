@@ -55,6 +55,8 @@ void ABirdBrawlerCharacter::BeginPlay()
 
 	SetMaterials(InitialMaterialInstances);
 	SetInvincibilityMaterialsParameters();
+
+	CachedAirControl = GetCharacterMovement()->AirControl;
 }
 
 void ABirdBrawlerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -243,6 +245,23 @@ bool ABirdBrawlerCharacter::IsAgainstWall(FWallCollisionInfo& OutWallCollisionIn
 	return false;
 }
 
+void ABirdBrawlerCharacter::EnableAirMovement(bool Enable)
+{
+	if (Enable)
+	{
+		GetCharacterMovement()->AirControl = CachedAirControl;
+	}
+	else
+	{
+		CachedAirControl = GetCharacterMovement()->AirControl;
+		GetCharacterMovement()->AirControl = 0.f;
+	}
+}
+
+void ABirdBrawlerCharacter::OnWallCollision_Implementation(FVector CollisionNormal)
+{
+}
+
 void ABirdBrawlerCharacter::InitFsm()
 {
 	verify(Fsm);
@@ -368,6 +387,24 @@ void ABirdBrawlerCharacter::UpdatePushboxOverlap(float DeltaTime)
 				const FVector NextLocation = FVector(CurrentLocation.X, NextPosition, CurrentLocation.Z);
 
 				SetActorLocation(NextLocation);
+			}
+		}
+	}
+}
+
+void ABirdBrawlerCharacter::UpdateWallsOverlap()
+{
+	if (WallBox != nullptr)
+	{
+		TArray<UPrimitiveComponent*> OverlappingComponents;
+		WallBox->GetOverlappingComponents(OverlappingComponents);
+
+		// TODO: this may not take into account all possibilities
+		// this whole thing could be solved by using collision events, figure out how to do it
+		if (CollidingWalls != OverlappingComponents)
+		{
+			if (OverlappingComponents.Num() > CollidingWalls.Num())
+			{
 			}
 		}
 	}
