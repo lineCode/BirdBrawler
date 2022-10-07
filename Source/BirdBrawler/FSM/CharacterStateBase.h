@@ -89,6 +89,9 @@ protected:
 	UFUNCTION(BlueprintPure)
 	float GetElapsedTimeSinceStateEnter();
 
+	UFUNCTION(BlueprintCallable)
+	void ClearMovesBuffer();
+
 	void InvokeCharacterMoveEndedEvent(FName MoveName);
 
 	virtual void Init_Implementation() override;

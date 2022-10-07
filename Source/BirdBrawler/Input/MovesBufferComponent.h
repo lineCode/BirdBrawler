@@ -31,6 +31,8 @@ public:
 
 	TArray<FString> GetBufferedInputs() const;
 
+	void ClearBuffer();
+
 	float InputMovement{0.f};
 
 	bool MovingRight{false};
@@ -53,7 +55,6 @@ protected:
 	void AddMoveToBuffer(const FString& MoveName);
 	bool BufferContainsConsumableInput(const FString& Input) const;
 
-	void ClearBuffer();
 
 	void OnMoveHorizontal(float Value);
 

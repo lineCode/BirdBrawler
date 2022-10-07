@@ -79,6 +79,11 @@ float UCharacterStateBase::GetElapsedTimeSinceStateEnter()
 	return ElapsedTimeSinceEnter;
 }
 
+void UCharacterStateBase::ClearMovesBuffer()
+{
+	Character->ClearMovesBuffer();
+}
+
 void UCharacterStateBase::InvokeCharacterMoveEndedEvent(FName MoveName)
 {
 	const std::string MoveNameStr = TCHAR_TO_UTF8(*(MoveName.ToString()));

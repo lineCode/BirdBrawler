@@ -130,6 +130,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ApplyAirFrictionIncrease(float ElapsedTimeSinceAirborne);
 
+	UFUNCTION(BlueprintCallable)
+	void ClearMovesBuffer();
+
 	float GetKnockbackMultiplier() const;
 
 	bool IsAgainstWall(FWallCollisionInfo& OutWallCollisionInfo) const;

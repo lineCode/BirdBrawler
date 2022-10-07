@@ -221,6 +221,11 @@ void ABirdBrawlerCharacter::ApplyAirFrictionIncrease(float ElapsedTimeSinceAirbo
 	}
 }
 
+void ABirdBrawlerCharacter::ClearMovesBuffer()
+{
+	GetMovesBufferComponent()->ClearBuffer();
+}
+
 float ABirdBrawlerCharacter::GetKnockbackMultiplier() const
 {
 	return KnockbackMultiplierCurve.GetRichCurveConst()->Eval(DamagePercent);
