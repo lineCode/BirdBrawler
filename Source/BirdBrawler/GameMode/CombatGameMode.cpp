@@ -28,33 +28,14 @@ void ACombatGameMode::BeginPlay()
 
 	verify(PlayerStarts.Num() == MaxCharacters);
 
-	/*PlayerStarts.Sort([](const AActor& A, const AActor& B)
-	{
-		APlayerStart& AStart = Cast<APlayerStart>(A);
-		APlayerStart& BStart = Cast<APlayerStart>(B);
-
-		int APlayerIndex;
-		verify(FDefaultValueHelper::ParseInt(AStart->PlayerStartTag.ToString(), APlayerIndex));
-
-		int BPlayerIndex;
-		verify(FDefaultValueHelper::ParseInt(BStart->PlayerStartTag.ToString(), BPlayerIndex));
-
-		return APlayerIndex < BPlayerIndex;
-	});*/
-
 	// TODO: Assume characters to spawn are correctly ordered at this point
 	for (int i = 0; i < CharactersTypesToSpawn.Num(); ++i)
 	{
-		auto* SpawnedCharacter = GetWorld()->SpawnActor<ABirdBrawlerCharacter>(CharactersTypesToSpawn[i], PlayerStarts[i]->GetActorTransform());
-		SpawnedCharacters.Emplace(SpawnedCharacter);
-
 		auto* Player = UGameplayStatics::CreatePlayer(GetWorld());
-		Player->Possess(SpawnedCharacter);
-
 		Players.Emplace(Player);
 	}
 
-	EnablePlayersInput(false);
+	//EnablePlayersInput(false);
 
 	PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	verify(PlayerController);
@@ -102,7 +83,7 @@ void ACombatGameMode::OnEachSecondPassed()
 	{
 		GetWorldTimerManager().ClearTimer(CountdownHandle);
 
-		EnablePlayersInput(true);
+		//EnablePlayersInput(true);
 
 		InitialCountdownEnded.Broadcast();
 
